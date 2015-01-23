@@ -1,0 +1,26 @@
+{% assign pagination_info = count|make_pagination %}
+<div>
+  <nav>
+    <ul class="pagination">
+      <li><a href="{{pagination_info.previous.url|escape}}">&laquo;</a></li>
+      {% for item in pagination_info.list %}
+        {% if item.text == pagination_info.current.text %}
+      <li class="active">
+        <a href="#">{{item.text|escape}}</a>
+      </li>
+        {% else %}
+          {% if item.text == '...' %}
+      <li class="disabled">
+        <a href="#">{{item.text|escape}}</a>
+      </li>
+          {% else %}
+      <li>
+        <a href="{{item.url|escape}}">{{item.text|escape}}</a>
+      </li>
+          {% endif %}
+        {% endif %}
+      {% endfor %}
+      <li><a href="{{pagination_info.next.url|escape}}">&raquo;</a></li>
+    </ul>
+  </nav>
+</div>

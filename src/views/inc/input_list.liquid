@@ -1,0 +1,10 @@
+{% for item in list %}
+<div class="form-group">
+  <label for="ipt-{{item.name|escape}}">{{item.title|escape}}</label>
+  {% if item.type == "multi" %}
+  <textarea class="form-control input-item" rows="5" id="ipt-{{item.name|escape}}" data-name="{{item.name|escape}}"></textarea>
+  {% else %}
+  <input type="text" class="form-control input-item" id="ipt-{{item.name|escape}}" data-name="{{item.name|escape}}" placeholder="">
+  {% endif %}
+</div>
+{% endfor %}

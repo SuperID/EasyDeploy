@@ -1,0 +1,8 @@
+{% assign list = object|object_to_array %}
+{% if title %}<div class="object-title">{{title|escape}}</div>{% endif %}
+{% for item in list %}
+<div class="object-item">
+  <span class="item-key">{{item.key|escape}}</span> =
+  <span class="item-value">{{item.value|escape}}</span>
+</div>
+{% endfor %}

@@ -1,0 +1,31 @@
+<nav class="navbar navbar-inverse" role="navigation">
+  <div class="container">
+    <div class="navbar-header">
+      <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1">
+        <span class="sr-only">Toggle navigation</span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+      </button>
+      <a class="navbar-brand" href="{{_config.web.url|escape}}">SIDAdmin</a>
+    </div>
+
+    <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
+      <ul class="nav navbar-nav">
+        <li {% if nav=="home" %}class="active" {% endif %}><a href="{{'/admin/home'|relative_url}}">状态</a></li>
+        <li {% if nav=="statistical" %}class="active" {% endif %}><a href="{{'/admin/statistical'|relative_url}}">调用统计</a></li>
+        <li {% if nav=="developer" %}class="active" {% endif %}><a href="{{'/admin/developer'|relative_url}}">开发者</a></li>
+        <li {% if nav=="app" %}class="active" {% endif %}><a href="{{'/admin/app'|relative_url}}">应用</a></li>
+        <li {% if nav=="user" %}class="active" {% endif %}><a href="{{'/admin/user'|relative_url}}">用户</a></li>
+        <li {% if nav=="config" %}class="active" {% endif %}><a href="{{'/admin/config'|relative_url}}">配置</a></li>
+        <li {% if nav=="verify_history" %}class="active" {% endif %}><a href="{{'/admin/verify_history'|relative_url}}">对比历史</a></li>
+        <li {% if nav=="crash_logs" %}class="active" {% endif %}><a href="{{'/admin/crash_logs'|relative_url}}">崩溃日志</a></li>
+        <li {% if nav=="send_mail" %}class="active" {% endif %}><a href="{{'/admin/send_mail'|relative_url}}">邮件推送</a></li>
+      </ul>
+      <ul class="nav navbar-nav navbar-right">
+        <li><a href="#">版本: {{admin_app_version|escape}}</a></li>
+        <li><a href="/admin/logout?code={{_server.session.admin_logout_code|escape}}">注销 {{_server.session.admin.username|escape}}</a></li>
+      </ul>
+    </div>
+  </div>
+</nav>

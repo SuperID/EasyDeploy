@@ -1,0 +1,25 @@
+{% include "inc/head" %}
+
+<body>
+  <div class="container">
+    <div class="row">
+      <div class="col-md-offset-4 col-md-4" style="margin-top:100px; min-height: 420px;">
+        <h3>登录</h3>
+        {% include "inc/error" %}
+        <form role="form" method="post">
+          <div class="form-group">
+            <label for="ipt-username">用户名</label>
+            <input type="text" class="form-control" id="ipt-username" name="username" placeholder="" value="{{_server.body.username|escape}}">
+          </div>
+          <div class="form-group">
+            <label for="ipt-password">密码</label>
+            <input type="password" class="form-control" name="password" id="ipt-password" placeholder="" value="{{_server.body.password|escape}}">
+          </div>
+          <button type="submit" class="btn btn-primary">登录</button>
+        </form>
+      </div>
+    </div>
+  </div>
+</body>
+
+{% include "inc/foot" %}

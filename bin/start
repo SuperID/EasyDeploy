@@ -1,0 +1,14 @@
+#!/usr/bin/env node
+
+/**
+ * EasyDeploy
+ *
+ * @author Zongmin Lei <leizongmin@gmail.com>
+ */
+
+var easydeploy = require('../');
+var utils = require('../src/utils');
+
+
+var app = easydeploy.start(utils.getConfigFromEnv());
+
