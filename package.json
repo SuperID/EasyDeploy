@@ -1,0 +1,14 @@
+{
+  "name": "easydeploy",
+  "version": "0.0.1",
+  "description": "代码部署管理平台",
+  "main": "src/index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [
+    "deploy"
+  ],
+  "author": "Zongmin Lei <leizongmin@gmail.com>",
+  "license": "MIT"
+}
