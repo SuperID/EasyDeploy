@@ -9,21 +9,22 @@ var multiparty = require('connect-multiparty');
 var bodyParser = require('body-parser');
 var cookieSession = require('cookie-session');
 var utils = require('./utils');
+var NS = utils.NS;
 
 
 // ------------------------- 中间件 ---------------------------------------------
 // 初始化中间件
-utils.NS('middleware.multiparty', multiparty());
-utils.NS('middleware.json', bodyParser.json());
-utils.NS('middleware.urlencoded', bodyParser.urlencoded({extended: true}));
+NS('middleware.multiparty', multiparty());
+NS('middleware.json', bodyParser.json());
+NS('middleware.urlencoded', bodyParser.urlencoded({extended: true}));
 
 /* Session 中间件 */
-utils.NS('middleware.session', cookieSession({
-  keys: utils.NS('config.cookie.keys')
+NS('middleware.session', cookieSession({
+  keys: NS('config.cookie.keys')
 }));
 
 /* 验证登录权限 */
-utils.NS('middleware.check_login', function (req, res, next) {
+NS('middleware.check_login', function (req, res, next) {
   if (req.session && req.session.login) return next();
   req.session.return_url = req.url;
   res.relativeRedirect('/login');
@@ -32,8 +33,12 @@ utils.NS('middleware.check_login', function (req, res, next) {
 // -------------------------- 模板引擎 ------------------------------------------
 
 var context = tinyliquid.newContext();
-utils.NS('tinyliquid.context', context);
+NS('tinyliquid.context', context);
 
 context.setFilter('relative_url', function (url) {
-  return utils.NS('config.urlPrefix') + url;
+  return NS('config.urlPrefix') + url;
+});
+
+context.setAsyncLocals('data_server_list', function (name, callback) {
+  NS('lib.server').list(utils.defaultErrorValue(callback, []));
 });

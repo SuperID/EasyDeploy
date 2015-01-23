@@ -44,6 +44,7 @@ exports.init = function (config) {
   utils.NS('router', router);
 
   // 初始化
+  utils.NS('lib.server', require('./lib/server'));
   require('./init');
 
   var ASSETS_DIR = path.resolve(__dirname, 'assets');
