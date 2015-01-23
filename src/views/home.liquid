@@ -37,7 +37,20 @@
   <div class="container">
     <div class="col-md-6">
       <div class="panel panel-default">
-        <div class="panel-heading"><span class="panel-title">服务器列表</span></div>
+        <div class="panel-heading"><span class="panel-title">项目列表 ({{data_project_list.length}})</span></div>
+        <div class="list-group">
+          {% for item in data_project_list %}
+          <a href="#" class="list-group-item">
+            <strong>{{item.name|escape}}</strong>
+            <span class="text-muted">({{item.description|escape}})</span>
+          </a>
+          {% endfor %}
+        </div>
+      </div>
+    </div>
+    <div class="col-md-6">
+      <div class="panel panel-default">
+        <div class="panel-heading"><span class="panel-title">服务器列表 ({{data_server_list.length}})</span></div>
         <div class="list-group">
           {% for item in data_server_list %}
           <a href="#" class="list-group-item">

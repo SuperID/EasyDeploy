@@ -7,20 +7,16 @@
         <span class="icon-bar"></span>
         <span class="icon-bar"></span>
       </button>
-      <a class="navbar-brand" href="{{_config.web.url|escape}}">SIDAdmin</a>
+      <a class="navbar-brand" href="{{'/'|relative_url}}">EastDeploy</a>
     </div>
 
     <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
       <ul class="nav navbar-nav">
-        <li {% if nav=="home" %}class="active" {% endif %}><a href="{{'/admin/home'|relative_url}}">状态</a></li>
-        <li {% if nav=="statistical" %}class="active" {% endif %}><a href="{{'/admin/statistical'|relative_url}}">调用统计</a></li>
-        <li {% if nav=="developer" %}class="active" {% endif %}><a href="{{'/admin/developer'|relative_url}}">开发者</a></li>
-        <li {% if nav=="app" %}class="active" {% endif %}><a href="{{'/admin/app'|relative_url}}">应用</a></li>
-        <li {% if nav=="user" %}class="active" {% endif %}><a href="{{'/admin/user'|relative_url}}">用户</a></li>
-        <li {% if nav=="config" %}class="active" {% endif %}><a href="{{'/admin/config'|relative_url}}">配置</a></li>
-        <li {% if nav=="verify_history" %}class="active" {% endif %}><a href="{{'/admin/verify_history'|relative_url}}">对比历史</a></li>
-        <li {% if nav=="crash_logs" %}class="active" {% endif %}><a href="{{'/admin/crash_logs'|relative_url}}">崩溃日志</a></li>
-        <li {% if nav=="send_mail" %}class="active" {% endif %}><a href="{{'/admin/send_mail'|relative_url}}">邮件推送</a></li>
+        <li {% if nav=="home" %}class="active" {% endif %}><a href="{{'/'|relative_url}}">首页</a></li>
+        <li {% if nav=="servers" %}class="active" {% endif %}><a href="{{'/servers'|relative_url}}">服务器</a></li>
+        <li {% if nav=="projects" %}class="active" {% endif %}><a href="{{'/projects'|relative_url}}">项目</a></li>
+        <li {% if nav=="status" %}class="active" {% endif %}><a href="{{'/status'|relative_url}}">状态</a></li>
+        <li {% if nav=="logs" %}class="active" {% endif %}><a href="{{'/logs'|relative_url}}">日志</a></li>
       </ul>
       <ul class="nav navbar-nav navbar-right">
         <li><a href="{{'/logout'|relative_url}}?code={{_server.session.login.code|escape}}">注销 {{_server.session.login.username|escape}}</a></li>

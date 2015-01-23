@@ -42,3 +42,8 @@ context.setFilter('relative_url', function (url) {
 context.setAsyncLocals('data_server_list', function (name, callback) {
   NS('lib.server').list(utils.defaultErrorValue(callback, []));
 });
+
+context.setAsyncLocals('data_project_list', function (name, callback) {
+  NS('lib.project').list(utils.defaultErrorValue(callback, []));
+});
+

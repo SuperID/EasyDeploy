@@ -45,6 +45,7 @@ exports.init = function (config) {
 
   // 初始化
   utils.NS('lib.server', require('./lib/server'));
+  utils.NS('lib.project', require('./lib/project'));
   require('./init');
 
   var ASSETS_DIR = path.resolve(__dirname, 'assets');
