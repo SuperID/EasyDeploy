@@ -1,4 +1,4 @@
-<nav class="navbar navbar-inverse" role="navigation">
+<nav class="navbar navbar-default" role="navigation">
   <div class="container">
     <div class="navbar-header">
       <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1">
@@ -23,8 +23,7 @@
         <li {% if nav=="send_mail" %}class="active" {% endif %}><a href="{{'/admin/send_mail'|relative_url}}">邮件推送</a></li>
       </ul>
       <ul class="nav navbar-nav navbar-right">
-        <li><a href="#">版本: {{admin_app_version|escape}}</a></li>
-        <li><a href="/admin/logout?code={{_server.session.admin_logout_code|escape}}">注销 {{_server.session.admin.username|escape}}</a></li>
+        <li><a href="{{'/logout'|relative_url}}?code={{_server.session.login.code|escape}}">注销 {{_server.session.login.username|escape}}</a></li>
       </ul>
     </div>
   </div>

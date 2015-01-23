@@ -23,7 +23,8 @@ function (req, res, next) {
   if (req.body.username === NS('config.admin.username') &&
       utils.validatePassword(req.body.password, NS('config.admin.password'))) {
     req.session.login = {
-      username: NS('config.admin.username')
+      username: NS('config.admin.username'),
+      code: utils.randomString(10)
     };
     res.relativeRedirect(req.session.return_url || req.query.return_url || '/');
     delete req.session.return_url;
@@ -33,8 +34,16 @@ function (req, res, next) {
   }
 });
 
+router.get('/logout', function (req, res, next) {
+  if (req.session.login && req.session.login.code === req.query.code) {
+    delete req.session.login;
+  }
+  res.relativeRedirect('/');
+});
+
 router.get('/',
   NS('middleware.check_login'),
 function (req, res, next) {
-  res.end('ok');
+  res.locals.nav = 'home';
+  res.render('home');
 });

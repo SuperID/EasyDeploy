@@ -1,4 +1,4 @@
-{% include "admin/inc/head" %}
+{% include "inc/head" %}
 
 <style>
 #deploy-box {
@@ -33,186 +33,15 @@
 </style>
 
 <body>
-  {% include "admin/inc/nav" %}
+  {% include "inc/nav" %}
   <div class="container">
     <div class="col-md-8">
       <div class="panel panel-primary">
         <div class="panel-heading">源码</div>
-        <table class="table table-striped">
-          <tr>
-            <td width="160">程序版本</td>
-            <td>
-              <strong>{{_config.version.branch|escape}}</strong>
-              <span>-</span>
-              <strong>{{_config.version.id|substr:0,9|escape}}</strong>
-              <span>({{_config.version.message|escape}})</span>
-              <button class="btn btn-xs btn-primary deploy-btn">更新代码并部署</button>
-            </td>
-          </tr>
-          <tr>
-            <td>最后更新时间</td>
-            <td>{{_config.version.updated_at|date:'%Y-%m-%d %H:%M'}}</td>
-          </tr>
-          <tr>
-            <td>程序启动时间</td>
-            <td>{{_config.version.started_at|date:'%Y-%m-%d %H:%M'}}</td>
-          </tr>
-          <tr>
-            <td>服务器当前时间</td>
-            <td>{{'now'|date:'%Y-%m-%d %H:%M'}}</td>
-          </tr>
-          <tr>
-            <td>程序已运行时间</td>
-            <td>{{_system_uptime|second_to_hour}}h</td>
-          </tr>
-          <tr>
-            <td>内存占用</td>
-            <td>{{_system_memory|bytes}}</td>
-          </tr>
-          <tr>
-            <td>已处理请求数量</td>
-            <td>{{_page_request_counter}}</td>
-          </tr>
-          <tr>
-            <td>当前进程监听端口</td>
-            <td>
-            {% for item in _config.web.ipaddresses %}
-              {{item.address|escape}}:{{_config.web.port|escape}}
-              {% unless forloop.last %}<br>{% endunless %}
-            {% endfor %}
-            </td>
-          </tr>
-          <tr>
-            <td>Node.js版本</td>
-            <td>{{_config.version.node|escape}}</td>
-          </tr>
-        </table>
+        
       </div>
-      <div class="panel panel-primary">
-        <div class="panel-heading">服务器状态</div>
-        <table class="table table-striped">
-          <tr>
-            <td width="160">服务器已运行时间</td>
-            <td>{{_system_uptime_os|second_to_hour}}h</td>
-          </tr>
-          <tr>
-            <td>服务器总内存</td>
-            <td>{{_system_memory_total|bytes}}</td>
-          </tr>
-          <tr>
-            <td>服务器剩余内存</td>
-            <td>{{_system_memory_free|bytes}}</td>
-          </tr>
-          <tr>
-            <td>服务器CPU</td>
-            <td>{{_system_cpu}}</td>
-          </tr>
-        </table>
-      </div>
-    </div>
-    <div class="col-md-4">
-      <div class="panel panel-primary">
-        <div class="panel-heading">短信接口</div>
-        <table class="table table-striped">
-          <tr>
-            <td width="160">国内短信余量</td>
-            <td>{{_system_sms_quota|escape}}</td>
-          </tr>
-          <tr>
-            <td width="160">国际短信余量</td>
-            <td>{{_system_sms_quota2|escape}}</td>
-          </tr>
-        </table>
-      </div>
-      <div class="panel panel-primary">
-        <div class="panel-heading">表情API</div>
-        <table class="table table-striped">
-          <tr>
-            <th width="160">API Key</th>
-            <th>剩余次数</th>
-          </tr>
-          {% assign get_detection_api_usage = 0 %}
-          {% for item in _get_detection_api_usages %}
-            {% assign get_detection_api_usage = get_detection_api_usage|plus:item.quote %}
-          <tr>
-            <td>{{item.id|escape}}</td>
-            <td>{{item.quote|escape}}</td>
-          </tr>
-          {% endfor %}
-          <tr>
-            <td>总数</td>
-            <td><strong>{{get_detection_api_usage|escape}}</strong></td>
-          </tr>
-        </table>
-      </div>
-    </div>
-  </div>
-
-  <div id="deploy-box">
-    <div id="deploy-box-img">
-      <img src="{{'/assets/yideng.png'|relative_url}}">
-    </div>
-    <div id="deploy-box-desc">
-      一登法师正在发功，请稍候... (已完成<span id="deploy-box-progress">0</span>%)
     </div>
   </div>
 </body>
 
-{% include "admin/inc/foot" %}
-
-<script>
-
-function hideDeployBox () {
-  $('#deploy-box').fadeOut();
-}
-
-function showDeployBox () {
-  $('#deploy-box').fadeIn();
-  if (showDeployBox.tid) return;
-  var i = 0;
-  showDeployBox.tid = setInterval(function () {
-    i++;
-    $('#deploy-box').css('background-color', i % 2 === 0 ? '#000' : '#aaa');
-  }, 100);
-}
-
-function updateDeployProgress (n) {
-  $('#deploy-box-progress').text(n + '0');
-  $('#deploy-box-desc').css('font-size', 40 + Number(n) * 2);
-}
-
-$('.deploy-btn').click(function () {
-  showDeployBox();
-  ajaxRequest.post('{{"/admin/deploy"|relative_url}}', function (err, ret) {
-    if (err) {
-      hideDeployBox();
-      return messageBox.error(err);
-    }
-
-    var c = ret.delay;
-    setInterval(countdown, 1000);
-    countdown();
-
-    function countdown () {
-      updateDeployProgress(10 - c);
-      c--;
-      if (c <= 0) {
-        checkDeployResult();
-      }
-    }
-
-    function checkDeployResult () {
-      $.ajax({
-        url: location.toString(),
-        success: function () {
-          location.reload();
-        },
-        error: function () {
-          messageBox.error('一登法师发功失败！法师建议您SSH登录上服务器乱搞一番，自求多福吧～～～南无阿弥陀佛');
-        }
-      })
-    }
-  });
-});
-</script>
-
+{% include "inc/foot" %}
