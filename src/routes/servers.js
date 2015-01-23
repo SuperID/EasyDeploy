@@ -52,3 +52,14 @@ router.post('/servers/new',
   NS('middleware.urlencoded'),
 saveItem);
 
+router.delete('/server/:name.json',
+  NS('middleware.check_login'),
+  NS('middleware.multiparty'),
+  NS('middleware.json'),
+  NS('middleware.urlencoded'),
+function (req, res, next) {
+  NS('lib.server').delete(req.params.name, function (err) {
+    if (err) return res.apiError(err);
+    res.apiSuccess({name: req.params.name});
+  });
+});

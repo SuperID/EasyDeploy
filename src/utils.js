@@ -11,15 +11,17 @@ exports = module.exports = utils;
 var leiNS = require('lei-ns');
 var clone = require('clone');
 var mkdirp = require('mkdirp');
-var debug = require('debug');
+var createDebug = require('debug');
 var DEFAULT_CONFIG = require('./default_config');
 
 
 utils.NS = leiNS.Namespace();
 
 utils.debug = function (name) {
-  return debug('easydeploy:' + name);
+  return createDebug('easydeploy:' + name);
 };
+
+var debug = utils.debug('utils');
 
 /**
  * 从环境变量中获取配置信息
@@ -130,4 +132,15 @@ utils.defaultErrorValue = function (callback, v) {
     }
     callback(null, ret);
   }
+};
+
+/**
+ * 删除指定文件
+ *
+ * @param {String} filename
+ * @param {Function} callback
+ */
+utils.deleteFile = function (filename, callback) {
+  debug('delete file: %s', filename);
+  fs.unlink(filename, callback);
 };

@@ -14,6 +14,7 @@ var expressLiquid = require('express-liquid');
 var tinyliquid = require('tinyliquid');
 var rd = require('rd');
 var utils = require('./utils');
+var debug = utils.debug('index');
 
 
 /**
@@ -99,6 +100,18 @@ exports.init = function (config) {
     setLocals('query');
     setLocals('headers');
     setLocals('url');
+
+    res.apiError = function (err, data) {
+      data = data || {};
+      data.error = err.toString();
+      debug('api error: %s', err);
+      res.json(data);
+    };
+
+    res.apiSuccess = function (data) {
+      debug('api success: %s', data);
+      res.json(data);
+    };
 
     next();
   });

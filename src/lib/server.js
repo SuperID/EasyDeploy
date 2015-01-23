@@ -49,3 +49,14 @@ exports.get = function (name, callback) {
   var filename = utils.dataDir('server', name + '.json');
   utils.readJSONFile(filename, callback);
 };
+
+/**
+ * 删除指定name
+ *
+ * @param {String} name
+ * @param {Function} callback
+ */
+exports.delete = function (name, callback) {
+  var filename = utils.dataDir('server', name + '.json');
+  utils.deleteFile(filename, callback);
+};
