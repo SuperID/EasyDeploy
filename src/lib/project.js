@@ -38,3 +38,14 @@ exports.save = function (data, callback) {
   var filename = utils.dataDir('project', data.name + '.json');
   utils.writeJSONFile(filename, data, callback);
 };
+
+/**
+ * 读取指定name
+ *
+ * @param {String} name
+ * @param {Function} callback
+ */
+exports.get = function (name, callback) {
+  var filename = utils.dataDir('project', name + '.json');
+  utils.readJSONFile(filename, callback);
+};
