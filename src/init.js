@@ -47,3 +47,6 @@ context.setAsyncLocals('data_project_list', function (name, callback) {
   NS('lib.project').list(utils.defaultErrorValue(callback, []));
 });
 
+context.setAsyncLocals('data_action_list', function (name, callback) {
+  NS('lib.action').list(utils.defaultErrorValue(callback, []));
+});

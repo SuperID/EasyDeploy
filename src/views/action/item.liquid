@@ -1,0 +1,56 @@
+{% include "inc/head" %}
+
+<body>
+  {% include "inc/nav" %}
+  <div class="container">
+    {% include "inc/error" %}
+    <div class="panel panel-default">
+      <div class="panel-heading"><span class="panel-title">服务器 {{input.name|escape}}</span></div>
+      <div class="panel-body">
+        <form class="form-horizontal" role="form" method="post">
+          <div class="form-group">
+            <label for="ipt-name" class="col-sm-2 control-label">名称</label>
+            <div class="col-sm-10">
+              <input type="text" class="form-control" id="ipt-name" placeholder="名称" name="name" value="{{input.name|escape}}">
+            </div>
+          </div>
+          <div class="form-group">
+            <label for="ipt-description" class="col-sm-2 control-label">说明</label>
+            <div class="col-sm-10">
+              <textarea class="form-control" id="ipt-description" placeholder="说明" name="description" rows="3">{{input.description|escape}}</textarea>
+            </div>
+          </div>
+          <div class="form-group">
+            <label for="ipt-list" class="col-sm-2 control-label">命令</label>
+            <div class="col-sm-10">
+              <textarea class="form-control" id="ipt-list" placeholder="命令" name="list" rows="10">{{input.list|escape}}</textarea>
+            </div>
+          </div>
+          <div class="form-group">
+            <div class="col-sm-offset-2 col-sm-10">
+              <button type="submit" class="btn btn-primary">保存</button>
+              &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+              <button type="button" class="btn btn-danger btn-delete">删除</button>
+            </div>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+</body>
+
+{% include "inc/foot" %}
+
+<script>
+$('.btn-delete').click(function () {
+  if (!confirm('是否确认删除？')) return;
+  var $btn = $(this);
+  $btn.button('loading');
+  ajaxRequest.delete('{{"/action"|relative_url}}/{{input.name|escape}}.json', function (err, ret) {
+    $btn.button('reset');
+    if (err) return alert(err);
+    location = '{{"/actions"|relative_url}}';
+  });
+});
+</script>
+
