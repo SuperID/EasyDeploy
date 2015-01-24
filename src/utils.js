@@ -104,7 +104,7 @@ utils.writeJSONFile = function (filename, data, callback) {
     if (err) return callback(err);
 
     try {
-      var content = JSON.stringify(data);
+      var content = utils.jsonStringify(data, 2);
     } catch (err) {
       err.data = data;
       return callback(err);

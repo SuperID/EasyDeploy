@@ -35,8 +35,15 @@ exports.list = function (callback) {
  */
 exports.save = function (data, callback) {
   if (!data.name) data.name = 'unnamed_' + utils.randomString(10);
-  var filename = utils.dataDir('project', data.name + '.json');
-  utils.writeJSONFile(filename, data, callback);
+
+  exports.get(data.name, function (err, ret) {
+    if (ret) {
+      data = utils.merge(ret, data);
+    }
+
+    var filename = utils.dataDir('project', data.name + '.json');
+    utils.writeJSONFile(filename, data, callback);
+  });
 };
 
 /**
@@ -59,4 +66,37 @@ exports.get = function (name, callback) {
 exports.delete = function (name, callback) {
   var filename = utils.dataDir('project', name + '.json');
   utils.deleteFile(filename, callback);
+};
+
+/**
+ * 添加部署服务器
+ *
+ * @param {String} name
+ * @param {Object} data
+ * @param {Function} callback
+ */
+exports.addServer = function (name, data, callback) {
+  exports.get(name, function (err, project) {
+    if (err) return callback(err);
+
+    if (!data.id) data.id = utils.randomString(10);
+    if (!Array.isArray(project.servers)) {
+      project.servers = [data];
+    } else {
+      var isExist = false;
+      project.servers = project.servers.map(function (item) {
+        if (item.id === data.id) {
+          isExist = true;
+          return data;
+        } else {
+          return item;
+        }
+      });
+      if (!isExist) {
+        project.servers.push(data);
+      }
+    }
+
+    exports.save(project, callback);
+  });
 };

@@ -22,7 +22,7 @@
     "express": "^4.11.1",
     "express-liquid": "^0.2.6",
     "lei-ns": "^0.1.2",
-    "lei-utils": "^1.0.4",
+    "lei-utils": "^1.0.5",
     "mkdirp": "^0.5.0",
     "rd": "0.0.2",
     "serve-static": "^1.8.1",

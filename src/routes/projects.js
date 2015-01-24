@@ -16,6 +16,7 @@ function (req, res, next) {
     if (err) res.locals.error = err;
 
     res.locals.input = info;
+    res.locals.project = info;
     res.locals.nav = 'projects';
     res.render('project/item');
   });
@@ -31,11 +32,14 @@ function (req, res, next) {
 
 function saveItem (req, res, next) {
   NS('lib.project').save(req.body, function (err) {
-    if (err) res.locals.error = err;
-
-    res.locals.input = req.body;
-    res.locals.nav = 'projects';
-    res.render('project/item');
+    if (err) {
+      res.locals.error = err;
+      res.locals.input = req.body;
+      res.locals.nav = 'projects';
+      res.render('project/item');
+    } else {
+      res.relativeRedirect('/project/' + req.body.name);
+    }
   });
 }
 router.post('/project/:name',
@@ -69,4 +73,34 @@ router.get('/projects',
 function (req, res, next) {
   res.locals.nav = 'projects';
   res.render('project/list');
+});
+
+function addServer (req, res, next) {
+  NS('lib.project').get(req.params.name, function (err, info) {
+    if (err) res.locals.error = err;
+
+    res.locals.project = info;
+    res.locals.nav = 'projects';
+    res.render('project/add_server');
+  });
+}
+
+router.get('/project/:name/servers/add',
+  NS('middleware.check_login'),
+addServer);
+
+router.post('/project/:name/servers/add',
+  NS('middleware.check_login'),
+  NS('middleware.multiparty'),
+  NS('middleware.json'),
+  NS('middleware.urlencoded'),
+function (req, res, next) {
+  NS('lib.project').addServer(req.params.name, req.body, function (err) {
+    if (err) {
+      res.locals.error = err;
+      addServer(req, res, next);
+    } else {
+      res.relativeRedirect('/project/' + req.params.name);
+    }
+  });
 });

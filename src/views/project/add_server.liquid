@@ -1,0 +1,48 @@
+{% include "inc/head" %}
+
+<body>
+  {% include "inc/nav" %}
+  <div class="container">
+    {% include "inc/error" %}
+    <div class="panel panel-default">
+      <div class="panel-heading"><span class="panel-title">给 {{project.name|escape}} 添加部署服务器</span></div>
+      <div class="panel-body">
+        <form class="form-horizontal" role="form" method="post">
+          <input type="hidden" name="id" value="{{input.id|escape}}">
+          <div class="form-group">
+            <label for="ipt-name" class="col-sm-2 control-label">服务器</label>
+            <div class="col-sm-10">
+              <select class="form-control" id="ipt-name" placeholder="服务器" name="name" value="{{input.name|escape}}">
+              {% for item in data_server_list %}
+                <option value="{{item.name|escape}}" {% if item.name == input.name %}selected{% endif %}>{{item.name|escape}}</option>
+              {% endfor %}
+              </select>
+            </div>
+          </div>
+          <div class="form-group">
+            <label for="ipt-path" class="col-sm-2 control-label">路径</label>
+            <div class="col-sm-10">
+              <input type="text" class="form-control" id="ipt-path" placeholder="路径" name="path" value="{{input.path|escape}}">
+            </div>
+          </div>
+          <div class="form-group">
+            <label for="ipt-env" class="col-sm-2 control-label">环境变量</label>
+            <div class="col-sm-10">
+              <p class="help-block">格式：NAME=value （每个变量一行）</p>
+              <textarea class="form-control" id="ipt-env" placeholder="环境变量" name="env" rows="5">{{input.env|escape}}</textarea>
+            </div>
+          </div>
+          <div class="form-group">
+            <div class="col-sm-offset-2 col-sm-10">
+              <button type="submit" class="btn btn-primary">保存</button>
+              &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+              <button type="button" class="btn btn-danger btn-delete">删除</button>
+            </div>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+</body>
+
+{% include "inc/foot" %}
