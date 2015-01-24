@@ -72,11 +72,10 @@
       </div>
       <div class="panel-body">
         <form class="form-horizontal" role="form" method="post">
-          <input type="hidden" name="id" value="{{input.id|escape}}">
           <div class="form-group">
-            <label for="ipt-name" class="col-sm-2 control-label">服务器</label>
+            <label for="ipt-action-server" class="col-sm-2 control-label">服务器</label>
             <div class="col-sm-10">
-              <select class="form-control" id="ipt-name" placeholder="服务器" name="name">
+              <select class="form-control" id="ipt-action-server" placeholder="服务器" name="server">
               {% for item in data_server_list %}
                 <option value="{{item.name|escape}}">{{item.name|escape}}</option>
               {% endfor %}
@@ -84,9 +83,9 @@
             </div>
           </div>
           <div class="form-group">
-            <label for="ipt-action" class="col-sm-2 control-label">动作</label>
+            <label for="ipt-action-action" class="col-sm-2 control-label">动作</label>
             <div class="col-sm-10">
-              <select class="form-control" id="ipt-action" placeholder="动作" name="action">
+              <select class="form-control" id="ipt-action-action" placeholder="动作" name="action">
               {% for item in data_action_list %}
                 <option value="{{item.name|escape}}">{{item.name|escape}}</option>
               {% endfor %}
@@ -95,7 +94,7 @@
           </div>
           <div class="form-group">
             <div class="col-sm-offset-2 col-sm-10">
-              <button type="button" class="btn btn-primary">执行</button>
+              <button type="button" class="btn btn-primary btn-exec-action">执行</button>
             </div>
           </div>
         </form>
@@ -118,5 +117,19 @@ $('.btn-delete').click(function () {
     location = '{{"/projects"|relative_url}}';
   });
 });
-</script>
 
+$('.btn-exec-action').click(function () {
+  var server = $('#ipt-action-server').val();
+  var action = $('#ipt-action-action').val();
+  var $btn = $(this);
+  $btn.button('loading');
+  ajaxRequest.post('{{"/project"|relative_url}}/{{project.name|escape}}/execute.json', {
+    server: server,
+    action: action
+  }, function (err, ret) {
+    $btn.button('reset');
+    if (err) return alert(err);
+    location = ret.url;
+  });
+});
+</script>

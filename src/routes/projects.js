@@ -7,6 +7,8 @@
 var utils = require('../utils');
 var NS = utils.NS;
 var router = NS('router');
+var io = NS('io');
+var async = require('async');
 
 
 router.get('/project/:name',
@@ -135,4 +137,62 @@ function (req, res, next) {
     if (err) return res.apiError(err);
     res.apiSuccess({name: req.params.name, id: req.params.id});
   });
+});
+
+// -----------------------------------------------------------------------------
+
+var executeTasks = {};
+
+router.post('/project/:name/execute.json',
+  NS('middleware.check_login'),
+  NS('middleware.multiparty'),
+  NS('middleware.json'),
+  NS('middleware.urlencoded'),
+function (req, res, next) {
+  var id = utils.randomString(10);
+  executeTasks[id] = {
+    project: req.params.name,
+    server: req.body.server,
+    action: req.body.action
+  };
+  res.apiSuccess({url: res.getRelativeRedirect('/project/' + req.params.name + '/execute/realtime/' + id)});
+});
+
+router.get('/project/:name/execute/realtime/:id',
+  NS('middleware.check_login'),
+function (req, res, next) {
+  var task = executeTasks[req.params.id];
+  async.series([
+    function (next) {
+      if (!task) return next(new Error('invalid task'));
+      next();
+    },
+    function (next) {
+      NS('lib.project').get(req.params.name, function (err, ret) {
+        res.locals.project = ret;
+        next(err);
+      });
+    },
+    function (next) {
+      NS('lib.action').get(task.action, function (err, ret) {
+        res.locals.action = ret;
+        next(err);
+      });
+    },
+    function (next) {
+      NS('lib.server').get(task.server, function (err, ret) {
+        res.locals.server = ret;
+        next(err);
+      });
+    }
+  ], function (err) {
+    if (err) res.locals.error = err;
+    res.locals.task = task;
+    res.locals.nav = 'projects';
+    res.render('project/execute');
+  });
+});
+
+io.on('connection', function (socket) {
+  socket.emit('log', '连接成功!');
 });

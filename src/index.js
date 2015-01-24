@@ -4,8 +4,9 @@
  * @author Zongmin Lei <leizongmin@gmail.com>
  */
 
-var fs = require('path');
+var fs = require('fs');
 var path = require('path');
+var http = require('http');
 var express = require('express');
 var cookieParser = require('cookie-parser');
 var bodyParser = require('body-parser');
@@ -13,6 +14,7 @@ var serveStatic = require('serve-static');
 var expressLiquid = require('express-liquid');
 var tinyliquid = require('tinyliquid');
 var rd = require('rd');
+var SocketIO = require('socket.io');
 var utils = require('./utils');
 var debug = utils.debug('index');
 
@@ -25,10 +27,15 @@ var debug = utils.debug('index');
 exports.start = function (config) {
   config = utils.mergeDefaultConfig(config);
   utils.NS('config', config);
+
   var app = express();
-  var router = exports.init(config);
+  var server = http.createServer(app);
+
+  var router = exports.init(config, server);
   app.use(router);
-  app.listen(config.port);
+
+  server.listen(config.port);
+
   return app;
 };
 
@@ -37,9 +44,13 @@ exports.start = function (config) {
  *
  * @return {Object}
  */
-exports.init = function (config) {
+exports.init = function (config, server) {
   config = utils.mergeDefaultConfig(config);
   utils.NS('config', config);
+
+  // 初始化socket.io
+  var io = SocketIO(server);
+  utils.NS('io', io);
 
   var router = express.Router();
   utils.NS('router', router);
@@ -82,7 +93,11 @@ exports.init = function (config) {
     };
 
     res.relativeRedirect = function (url) {
-      res.redirect(utils.NS('config.urlPrefix') + url);
+      res.redirect(res.getRelativeRedirect(url));
+    };
+
+    res.getRelativeRedirect = function (url) {
+      return utils.NS('config.urlPrefix') + url;
     };
 
     res.locals._server = {

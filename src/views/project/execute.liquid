@@ -1,0 +1,77 @@
+{% include "inc/head" %}
+
+<style>
+#logs {
+  color: #333;
+  background-color: #F5F5F5;
+  border-color: #DDD;
+  padding: 10px 15px;
+  height: 500px;
+  overflow-y: scroll;
+}
+</style>
+
+<body>
+  {% include "inc/nav" %}
+  <div class="container">
+    <div class="panel panel-default">
+      <div class="panel-heading">
+        <span class="panel-title">项目 {{project.name|escape}}</span>
+      </div>
+      <div class="panel-body">
+        {% include "inc/error" %}
+        <div class="row">
+          <div class="col-md-6">
+            <table class="table table-striped">
+              <tr>
+                <td width="60">动作</td>
+                <td>{{action.name|escape}}</td>
+              </tr>
+              <tr>
+                <td>说明</td>
+                <td>{{action.description|escape}}</td>
+              </tr>
+            </table>
+          </div>
+          <div class="col-md-6">
+            <table class="table table-striped">
+              <tr>
+                <td width="60">服务器</td>
+                <td>{{server.name|escape}}</td>
+              </tr>
+              <tr>
+                <td>地址</td>
+                <td>{{server.user|escape}}@{{server.host|escape}}:{{server.port|escape}}</td>
+              </tr>
+            </table>
+          </div>
+        </div>
+        <div id="logs"></div>
+      </div>
+    </div>
+  </div>
+</body>
+
+{% include "inc/foot" %}
+
+{% unless error %}
+<script src="/socket.io/socket.io.js"></script>
+<script>
+var $logs = $('#logs');
+var socket = io();
+
+socket.on('log', function (msg) {
+  appendLog(msg);
+});
+
+function newLineToBR (line) {
+  return line.replace(/\n/g, '<br>');
+}
+
+function appendLog (msg) {
+  msg = newLineToBR(msg);
+  $logs.append(msg);
+  $logs.scrollTop($logs.height());
+}
+</script>
+{% endunless %}
