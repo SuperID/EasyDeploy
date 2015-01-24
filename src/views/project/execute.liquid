@@ -78,7 +78,7 @@ function newLineToBR (line) {
 function appendLog (msg) {
   msg = newLineToBR(msg);
   $logs.append(msg);
-  $logs.scrollTop($logs.height());
+  $logs.scrollTop(999999999999999);
 }
 
 var socket = io();

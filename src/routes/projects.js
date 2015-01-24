@@ -151,7 +151,7 @@ function generateExecCommands (task, callback) {
   context.setLocals('deploy', task.deployInfo);
   context.setLocals('server', task.serverInfo);
   context.setLocals('action', task.actionInfo);
-  tinyliquid.run(task.actionInfo.list, context, function (err) {
+  tinyliquid.run('cd {{deploy.path}}\n' + task.actionInfo.list, context, function (err) {
     if (err) return callback(err);
 
     task.commands = context.getBuffer();
@@ -225,7 +225,7 @@ function (req, res, next) {
 io.on('connection', function (socket) {
   var task;
 
-  socket.emit('log', '连接成功!\n');
+  socket.emit('error log', '已建立连接...\n');
 
   socket.on('task id', function (id) {
     task = executeTasks[id];
@@ -234,20 +234,22 @@ io.on('connection', function (socket) {
     if (task.stream) {
       listenStream();
     } else {
-      task.ssh = new SSHClient({
+      var options = {
         host: task.serverInfo.host,
         port: task.serverInfo.port,
         username: task.serverInfo.user,
-        privateKey: new Buffer(task.serverInfo.key)
-      })
+        privateKey: task.serverInfo.key.trim()
+      };
+      task.ssh = new SSHClient(options);
       task.ssh.connect(function (err) {
         if (err) return socket.emit('error log', '连接到远程服务器失败: ' + err);
 
-        task.ssh.exec(task.commands.split('\n').map(function (item) {
+        var commands = task.commands.split('\n').map(function (item) {
           return item.trim();
         }).filter(function (item) {
           return item;
-        }), function (err, stream) {
+        });
+        task.ssh.exec(commands, function (err, stream) {
           if (err) return socket.emit('error log', '执行命令失败: ' + err);
 
           task.stream = stream;

@@ -7,33 +7,85 @@
     <div class="panel panel-default">
       <div class="panel-heading"><span class="panel-title">服务器 {{input.name|escape}}</span></div>
       <div class="panel-body">
-        <form class="form-horizontal" role="form" method="post">
-          <div class="form-group">
-            <label for="ipt-name" class="col-sm-2 control-label">名称</label>
-            <div class="col-sm-10">
-              <input type="text" class="form-control" id="ipt-name" placeholder="名称" name="name" value="{{input.name|escape}}">
-            </div>
+        <div class="row">
+          <div class="col-md-6">
+            <form class="form-horizontal" role="form" method="post">
+              <div class="form-group">
+                <label for="ipt-name" class="col-sm-2 control-label">名称</label>
+                <div class="col-sm-10">
+                  <input type="text" class="form-control" id="ipt-name" placeholder="名称" name="name" value="{{input.name|escape}}">
+                </div>
+              </div>
+              <div class="form-group">
+                <label for="ipt-description" class="col-sm-2 control-label">说明</label>
+                <div class="col-sm-10">
+                  <textarea class="form-control" id="ipt-description" placeholder="说明" name="description" rows="3">{{input.description|escape}}</textarea>
+                </div>
+              </div>
+              <div class="form-group">
+                <label for="ipt-list" class="col-sm-2 control-label">命令</label>
+                <div class="col-sm-10">
+                  <textarea class="form-control" id="ipt-list" placeholder="命令" name="list" rows="10">{{input.list|escape}}</textarea>
+                </div>
+              </div>
+              <div class="form-group">
+                <div class="col-sm-offset-2 col-sm-10">
+                  <button type="submit" class="btn btn-primary">保存</button>
+                  &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                  <button type="button" class="btn btn-danger btn-delete">删除</button>
+                </div>
+              </div>
+            </form>
           </div>
-          <div class="form-group">
-            <label for="ipt-description" class="col-sm-2 control-label">说明</label>
-            <div class="col-sm-10">
-              <textarea class="form-control" id="ipt-description" placeholder="说明" name="description" rows="3">{{input.description|escape}}</textarea>
-            </div>
+          <div class="col-md-6">
+            <table class="table">
+              <tr>
+                <th width="120">变量名</th>
+                <th>说明</th>
+              </tr>
+              <tr>
+                <td>project.name</td>
+                <td>项目名称</td>
+              </tr>
+              <tr>
+                <td>project.branch</td>
+                <td>项目Git分支</td>
+              </tr>
+              <tr>
+                <td>project.launch</td>
+                <td>项目启动文件名</td>
+              </tr>
+              <tr>
+                <td>server.name</td>
+                <td>服务器名称</td>
+              </tr>
+              <tr>
+                <td>server.host</td>
+                <td>服务器地址</td>
+              </tr>
+              <tr>
+                <td>server.port</td>
+                <td>服务器端口</td>
+              </tr>
+              <tr>
+                <td>server.user</td>
+                <td>服务器用户名</td>
+              </tr>
+              <tr>
+                <td>action.name</td>
+                <td>动作名称</td>
+              </tr>
+              <tr>
+                <td>deploy.path</td>
+                <td>部署路径</td>
+              </tr>
+              <tr>
+                <td>deploy.env</td>
+                <td>环境变量</td>
+              </tr>
+            </table>
           </div>
-          <div class="form-group">
-            <label for="ipt-list" class="col-sm-2 control-label">命令</label>
-            <div class="col-sm-10">
-              <textarea class="form-control" id="ipt-list" placeholder="命令" name="list" rows="10">{{input.list|escape}}</textarea>
-            </div>
-          </div>
-          <div class="form-group">
-            <div class="col-sm-offset-2 col-sm-10">
-              <button type="submit" class="btn btn-primary">保存</button>
-              &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-              <button type="button" class="btn btn-danger btn-delete">删除</button>
-            </div>
-          </div>
-        </form>
+        </div>
       </div>
     </div>
   </div>
