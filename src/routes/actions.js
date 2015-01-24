@@ -31,11 +31,14 @@ function (req, res, next) {
 
 function saveItem (req, res, next) {
   NS('lib.action').save(req.body, function (err) {
-    if (err) res.locals.error = err;
-
-    res.locals.input = req.body;
-    res.locals.nav = 'actions';
-    res.render('action/item');
+    if (err) {
+      res.locals.error = err;
+      res.locals.input = req.body;
+      res.locals.nav = 'actions';
+      res.render('action/item');
+    } else {
+      res.relativeRedirect('/action/' + req.body.name);
+    }
   });
 }
 router.post('/action/:name',
