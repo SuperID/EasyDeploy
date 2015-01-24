@@ -13,9 +13,9 @@
     <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
       <ul class="nav navbar-nav">
         <li {% if nav=="home" %}class="active" {% endif %}><a href="{{'/'|relative_url}}">首页</a></li>
+        <li {% if nav=="projects" %}class="active" {% endif %}><a href="{{'/projects'|relative_url}}">项目</a></li>
         <li {% if nav=="servers" %}class="active" {% endif %}><a href="{{'/servers'|relative_url}}">服务器</a></li>
         <li {% if nav=="actions" %}class="active" {% endif %}><a href="{{'/actions'|relative_url}}">动作</a></li>
-        <li {% if nav=="projects" %}class="active" {% endif %}><a href="{{'/projects'|relative_url}}">项目</a></li>
         <li {% if nav=="status" %}class="active" {% endif %}><a href="{{'/status'|relative_url}}">状态</a></li>
         <li {% if nav=="logs" %}class="active" {% endif %}><a href="{{'/logs'|relative_url}}">日志</a></li>
       </ul>
