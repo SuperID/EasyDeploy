@@ -22,26 +22,38 @@
         {% include "inc/error" %}
         <div class="row">
           <div class="col-md-6">
-            <table class="table table-striped">
+            <table class="table">
               <tr>
-                <td width="60">动作</td>
+                <td width="60"><strong>动作</strong></td>
                 <td>{{action.name|escape}}</td>
               </tr>
               <tr>
-                <td>说明</td>
+                <td><strong>说明</strong></td>
                 <td>{{action.description|escape}}</td>
+              </tr>
+              <tr>
+                <td><strong>命令</strong></td>
+                <td>{{action.list|escape|newline_to_br}}</td>
               </tr>
             </table>
           </div>
           <div class="col-md-6">
-            <table class="table table-striped">
+            <table class="table">
               <tr>
-                <td width="60">服务器</td>
+                <td width="80"><strong>服务器</strong></td>
                 <td>{{server.name|escape}}</td>
               </tr>
               <tr>
-                <td>地址</td>
+                <td><strong>地址</strong></td>
                 <td>{{server.user|escape}}@{{server.host|escape}}:{{server.port|escape}}</td>
+              </tr>
+              <tr>
+                <td><strong>路径</strong></td>
+                <td>{{deploy_server.path|escape}}</td>
+              </tr>
+              <tr>
+                <td><strong>环境变量</strong></td>
+                <td>{{deploy_server.env|escape|newline_to_br}}</td>
               </tr>
             </table>
           </div>

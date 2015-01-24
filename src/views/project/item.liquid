@@ -56,49 +56,28 @@
           <a href="/project/{{input.name|escape}}/servers/add" class="btn btn-xs btn-default pull-right"><span class="glyphicon glyphicon-plus"></span></a>
         </span>
       </div>
-      <div class="list-group">
+      <ul class="list-group">
         {% for item in project.servers %}
-        <a href="{{'/project'|relative_url}}/{{project.name|escape}}/server/{{item.id|escape}}" class="list-group-item">
+          {% assign server_id = item.id %}
+        <li class="list-group-item">
           <strong>{{item.name|escape}}</strong>
           <span class="text-muted">(路径: {{item.path|escape}}, 环境变量: {{item.env|escape}})</span>
-        </a>
+          <div class="pull-right">
+            <a class="btn btn-xs btn-primary" href="{{'/project'|relative_url}}/{{project.name|escape}}/server/{{item.id|escape}}">编辑</a>
+            <div class="btn-group">
+              <button type="button" class="btn btn-info btn-xs dropdown-toggle" data-toggle="dropdown" aria-expanded="false">
+                动作 <span class="caret"></span>
+              </button>
+              <ul class="dropdown-menu" role="menu">
+                {% for item2 in data_action_list %}
+                <li><a href="#" class="btn-exec-action" data-id="{{server_id|escape}}" data-action="{{item2.name|escape}}">{{item2.name|escape}}</a></li>
+                {% endfor %}
+              </ul>
+            </div>
+          </div>
+        </li>
         {% endfor %}
-      </div>
-    </div>
-    <div class="panel panel-default">
-      <div class="panel-heading">
-        <span class="panel-title">部署动作</span></a>
-        </span>
-      </div>
-      <div class="panel-body">
-        <form class="form-horizontal" role="form" method="post">
-          <div class="form-group">
-            <label for="ipt-action-server" class="col-sm-2 control-label">服务器</label>
-            <div class="col-sm-10">
-              <select class="form-control" id="ipt-action-server" placeholder="服务器" name="server">
-              {% for item in data_server_list %}
-                <option value="{{item.name|escape}}">{{item.name|escape}}</option>
-              {% endfor %}
-              </select>
-            </div>
-          </div>
-          <div class="form-group">
-            <label for="ipt-action-action" class="col-sm-2 control-label">动作</label>
-            <div class="col-sm-10">
-              <select class="form-control" id="ipt-action-action" placeholder="动作" name="action">
-              {% for item in data_action_list %}
-                <option value="{{item.name|escape}}">{{item.name|escape}}</option>
-              {% endfor %}
-              </select>
-            </div>
-          </div>
-          <div class="form-group">
-            <div class="col-sm-offset-2 col-sm-10">
-              <button type="button" class="btn btn-primary btn-exec-action">执行</button>
-            </div>
-          </div>
-        </form>
-      </div>
+      </ul>
     </div>
     {% endif %}
   </div>
@@ -119,12 +98,12 @@ $('.btn-delete').click(function () {
 });
 
 $('.btn-exec-action').click(function () {
-  var server = $('#ipt-action-server').val();
-  var action = $('#ipt-action-action').val();
   var $btn = $(this);
+  var id = $btn.data('id');
+  var action = $btn.data('action');
   $btn.button('loading');
   ajaxRequest.post('{{"/project"|relative_url}}/{{project.name|escape}}/execute.json', {
-    server: server,
+    id: id,
     action: action
   }, function (err, ret) {
     $btn.button('reset');

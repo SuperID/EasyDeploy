@@ -152,7 +152,7 @@ function (req, res, next) {
   var id = utils.randomString(10);
   executeTasks[id] = {
     project: req.params.name,
-    server: req.body.server,
+    id: req.body.id,
     action: req.body.action
   };
   res.apiSuccess({url: res.getRelativeRedirect('/project/' + req.params.name + '/execute/realtime/' + id)});
@@ -162,6 +162,7 @@ router.get('/project/:name/execute/realtime/:id',
   NS('middleware.check_login'),
 function (req, res, next) {
   var task = executeTasks[req.params.id];
+  var deployServer;
   async.series([
     function (next) {
       if (!task) return next(new Error('invalid task'));
@@ -174,13 +175,19 @@ function (req, res, next) {
       });
     },
     function (next) {
+      NS('lib.project').getServerById(req.params.name, task.id, function (err, ret) {
+        res.locals.deploy_server = deployServer = ret;
+        next(err);
+      });
+    },
+    function (next) {
       NS('lib.action').get(task.action, function (err, ret) {
         res.locals.action = ret;
         next(err);
       });
     },
     function (next) {
-      NS('lib.server').get(task.server, function (err, ret) {
+      NS('lib.server').get(deployServer.name, function (err, ret) {
         res.locals.server = ret;
         next(err);
       });
