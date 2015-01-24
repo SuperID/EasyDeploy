@@ -1,0 +1,25 @@
+{% include "inc/head" %}
+
+<body>
+  {% include "inc/nav" %}
+  <div class="container">
+    <div class="panel panel-default">
+      <div class="panel-heading">
+        <span class="panel-title">
+          服务器列表 ({{data_server_list.length}})
+          <a href="/servers/new" class="btn btn-xs btn-default pull-right"><span class="glyphicon glyphicon-plus"></span></a>
+        </span>
+      </div>
+      <div class="list-group">
+        {% for item in data_server_list %}
+        <a href="{{'/server'|relative_url}}/{{item.name|escape}}" class="list-group-item">
+          <strong>{{item.name|escape}}</strong>
+          <span class="text-muted">({{item.user|escape}}@{{item.host|escape}}:{{item.port|escape}})</span>
+        </a>
+        {% endfor %}
+      </div>
+    </div>
+  </div>
+</body>
+
+{% include "inc/foot" %}

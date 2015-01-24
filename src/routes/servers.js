@@ -63,3 +63,10 @@ function (req, res, next) {
     res.apiSuccess({name: req.params.name});
   });
 });
+
+router.get('/servers',
+  NS('middleware.check_login'),
+function (req, res, next) {
+  res.locals.nav = 'servers';
+  res.render('server/list');
+});
