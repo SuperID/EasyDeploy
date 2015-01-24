@@ -68,6 +68,7 @@
 
 {% unless error %}
 <script src="/socket.io/socket.io.js"></script>
+<script src="{{'/assets/ansi_up.js'|relative_url}}"></script>
 <script>
 var $logs = $('#logs');
 
@@ -76,6 +77,7 @@ function newLineToBR (line) {
 }
 
 function appendLog (msg) {
+  msg = ansi_up.ansi_to_html(msg);
   msg = newLineToBR(msg);
   $logs.append(msg);
   $logs.scrollTop(999999999999999);
