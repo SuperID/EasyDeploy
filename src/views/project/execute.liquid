@@ -33,7 +33,7 @@
               </tr>
               <tr>
                 <td><strong>命令</strong></td>
-                <td>{{action.list|escape|newline_to_br}}</td>
+                <td>{{task.commands|escape|newline_to_br}}</td>
               </tr>
             </table>
           </div>
@@ -70,11 +70,6 @@
 <script src="/socket.io/socket.io.js"></script>
 <script>
 var $logs = $('#logs');
-var socket = io();
-
-socket.on('log', function (msg) {
-  appendLog(msg);
-});
 
 function newLineToBR (line) {
   return line.replace(/\n/g, '<br>');
@@ -85,5 +80,17 @@ function appendLog (msg) {
   $logs.append(msg);
   $logs.scrollTop($logs.height());
 }
+
+var socket = io();
+
+socket.on('log', function (msg) {
+  appendLog(msg);
+});
+
+socket.on('error log', function (msg) {
+  appendLog('<p class="text-danger">' + msg + '</p>');
+});
+
+socket.emit('task id', '{{task.id|escape}}');
 </script>
 {% endunless %}

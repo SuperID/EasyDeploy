@@ -9,6 +9,8 @@ var NS = utils.NS;
 var router = NS('router');
 var io = NS('io');
 var async = require('async');
+var SSHClient = require('lei-ssh');
+var tinyliquid = require('tinyliquid');
 
 
 router.get('/project/:name',
@@ -143,6 +145,20 @@ function (req, res, next) {
 
 var executeTasks = {};
 
+function generateExecCommands (task, callback) {
+  var context = tinyliquid.newContext();
+  context.setLocals('project', task.projectInfo);
+  context.setLocals('deploy', task.deployInfo);
+  context.setLocals('server', task.serverInfo);
+  context.setLocals('action', task.actionInfo);
+  tinyliquid.run(task.actionInfo.list, context, function (err) {
+    if (err) return callback(err);
+
+    task.commands = context.getBuffer();
+    callback(null);
+  });
+}
+
 router.post('/project/:name/execute.json',
   NS('middleware.check_login'),
   NS('middleware.multiparty'),
@@ -151,8 +167,9 @@ router.post('/project/:name/execute.json',
 function (req, res, next) {
   var id = utils.randomString(10);
   executeTasks[id] = {
+    id: id,
     project: req.params.name,
-    id: req.body.id,
+    deployId: req.body.id,
     action: req.body.action
   };
   res.apiSuccess({url: res.getRelativeRedirect('/project/' + req.params.name + '/execute/realtime/' + id)});
@@ -162,7 +179,6 @@ router.get('/project/:name/execute/realtime/:id',
   NS('middleware.check_login'),
 function (req, res, next) {
   var task = executeTasks[req.params.id];
-  var deployServer;
   async.series([
     function (next) {
       if (!task) return next(new Error('invalid task'));
@@ -170,36 +186,83 @@ function (req, res, next) {
     },
     function (next) {
       NS('lib.project').get(req.params.name, function (err, ret) {
-        res.locals.project = ret;
+        res.locals.project = task.projectInfo = ret;
         next(err);
       });
     },
     function (next) {
-      NS('lib.project').getServerById(req.params.name, task.id, function (err, ret) {
-        res.locals.deploy_server = deployServer = ret;
+      NS('lib.project').getServerById(req.params.name, task.deployId, function (err, ret) {
+        res.locals.deploy_server = task.deployInfo = ret;
         next(err);
       });
     },
     function (next) {
       NS('lib.action').get(task.action, function (err, ret) {
-        res.locals.action = ret;
+        res.locals.action = task.actionInfo = ret;
         next(err);
       });
     },
     function (next) {
-      NS('lib.server').get(deployServer.name, function (err, ret) {
-        res.locals.server = ret;
+      NS('lib.server').get(task.deployInfo.name, function (err, ret) {
+        res.locals.server = task.serverInfo = ret;
         next(err);
       });
     }
   ], function (err) {
     if (err) res.locals.error = err;
-    res.locals.task = task;
-    res.locals.nav = 'projects';
-    res.render('project/execute');
+
+    generateExecCommands(task, function (err) {
+      if (err) res.locals.error = err;
+
+      res.locals.task = task;
+      res.locals.nav = 'projects';
+      res.render('project/execute');
+    });
+
   });
 });
 
 io.on('connection', function (socket) {
-  socket.emit('log', '连接成功!');
+  var task;
+
+  socket.emit('log', '连接成功!\n');
+
+  socket.on('task id', function (id) {
+    task = executeTasks[id];
+    if (!task) return socket.emit('error log', '任务' + id + '不存在!');
+
+    if (task.stream) {
+      listenStream();
+    } else {
+      task.ssh = new SSHClient({
+        host: task.serverInfo.host,
+        port: task.serverInfo.port,
+        username: task.serverInfo.user,
+        privateKey: new Buffer(task.serverInfo.key)
+      })
+      task.ssh.connect(function (err) {
+        if (err) return socket.emit('error log', '连接到远程服务器失败: ' + err);
+
+        task.ssh.exec(task.commands.split('\n').map(function (item) {
+          return item.trim();
+        }).filter(function (item) {
+          return item;
+        }), function (err, stream) {
+          if (err) return socket.emit('error log', '执行命令失败: ' + err);
+
+          task.stream = stream;
+          listenStream();
+        });
+      });
+    }
+  });
+
+  function listenStream () {
+    task.stream.on('data', function (chunk) {
+      socket.emit('log', chunk.toString());
+    });
+    task.stream.on('end', function () {
+      socket.emit('error log', '结束.');
+    });
+  }
 });
