@@ -89,12 +89,18 @@ router.get('/project/:name/servers/add',
   NS('middleware.check_login'),
 addServer);
 
-router.post('/project/:name/servers/add',
+router.get('/project/:name/server/:id',
   NS('middleware.check_login'),
-  NS('middleware.multiparty'),
-  NS('middleware.json'),
-  NS('middleware.urlencoded'),
 function (req, res, next) {
+  NS('lib.project').getServerById(req.params.name, req.params.id, function (err, ret) {
+    if (err) res.locals.error = err;
+
+    res.locals.input = ret;
+    addServer(req, res, next);
+  });
+});
+
+function saveServer (req, res, next) {
   NS('lib.project').addServer(req.params.name, req.body, function (err) {
     if (err) {
       res.locals.error = err;
@@ -102,5 +108,31 @@ function (req, res, next) {
     } else {
       res.relativeRedirect('/project/' + req.params.name);
     }
+  });
+}
+
+router.post('/project/:name/servers/add',
+  NS('middleware.check_login'),
+  NS('middleware.multiparty'),
+  NS('middleware.json'),
+  NS('middleware.urlencoded'),
+saveServer);
+
+router.post('/project/:name/server/:id',
+  NS('middleware.check_login'),
+  NS('middleware.multiparty'),
+  NS('middleware.json'),
+  NS('middleware.urlencoded'),
+saveServer);
+
+router.delete('/project/:name/server/:id.json',
+  NS('middleware.check_login'),
+  NS('middleware.multiparty'),
+  NS('middleware.json'),
+  NS('middleware.urlencoded'),
+function (req, res, next) {
+  NS('lib.project').deleteServerById(req.params.name, req.params.id, function (err) {
+    if (err) return res.apiError(err);
+    res.apiSuccess({name: req.params.name, id: req.params.id});
   });
 });

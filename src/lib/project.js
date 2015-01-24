@@ -100,3 +100,53 @@ exports.addServer = function (name, data, callback) {
     exports.save(project, callback);
   });
 };
+
+/**
+ * 取指定ID的部署服务器信息
+ *
+ * @param {String} name
+ * @param {String} id
+ * @param {Function}
+ */
+exports.getServerById = function (name, id, callback) {
+  exports.get(name, function (err, project) {
+    if (err) return callback(err);
+
+    if (!Array.isArray(project.servers)) {
+      return callback(null, {id: id});
+    }
+
+    for (var i = 0; i < project.servers.length; i++) {
+      if (project.servers[i].id === id) {
+        return callback(null, project.servers[i]);
+      }
+    }
+
+    return callback(null, {id: id});
+  });
+};
+
+/**
+ * 删除指定ID的部署服务器信息
+ *
+ * @param {String} name
+ * @param {String} id
+ * @param {Function}
+ */
+exports.deleteServerById = function (name, id, callback) {
+  exports.get(name, function (err, project) {
+    if (err) return callback(err);
+
+    if (!Array.isArray(project.servers)) {
+      return callback(null, {id: id});
+    }
+
+    project.servers = project.servers.filter(function (item) {
+      return (item.id !== id);
+    });
+
+    exports.save(project, function (err) {
+      callback(err, {id: id});
+    });
+  });
+};
