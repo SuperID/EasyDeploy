@@ -144,3 +144,25 @@ utils.deleteFile = function (filename, callback) {
   debug('delete file: %s', filename);
   fs.unlink(filename, callback);
 };
+
+/**
+ * 对象数组排序
+ *
+ * @param {Array} list
+ * @param {String} field
+ * @param {Boolean} desc
+ */
+utils.sortByField = function (list, field, desc) {
+  if (desc) {
+    var GT = -1;
+    var LT = 1;
+  } else {
+    var GT = 1;
+    var LT = - 1;
+  }
+  return list.sort(function (a, b) {
+    if (a[field] > b[field]) return GT;
+    if (a[field] < b[field]) return LT;
+    return 0;
+  });
+};

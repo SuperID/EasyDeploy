@@ -23,7 +23,7 @@ exports.list = function (callback) {
       next();
     });
   }, function (err) {
-    callback(err, list);
+    callback(err, utils.sortByField(list, 'name'));
   });
 };
 
