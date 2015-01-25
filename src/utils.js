@@ -11,6 +11,7 @@ exports = module.exports = utils;
 var leiNS = require('lei-ns');
 var clone = require('clone');
 var mkdirp = require('mkdirp');
+var rd = require('rd');
 var createDebug = require('debug');
 var DEFAULT_CONFIG = require('./default_config');
 
@@ -61,7 +62,7 @@ utils.mergeDefaultConfig = function (config) {
 };
 
 /**
- * 取数据目录
+ * 取数据目录文件路径
  *
  * @param {String} paths
  * @return {String}
@@ -69,6 +70,18 @@ utils.mergeDefaultConfig = function (config) {
 utils.dataDir = function () {
   var args = Array.prototype.slice.call(arguments);
   args.unshift(utils.NS('config.dataDir'));
+  return path.resolve.apply(null, args);
+};
+
+/**
+ * 取源码目录文件路径
+ *
+ * @param {String} paths
+ * @return {String}
+ */
+utils.sourceDir = function () {
+  var args = Array.prototype.slice.call(arguments);
+  args.unshift(__dirname);
   return path.resolve.apply(null, args);
 };
 
@@ -164,5 +177,37 @@ utils.sortByField = function (list, field, desc) {
     if (a[field] > b[field]) return GT;
     if (a[field] < b[field]) return LT;
     return 0;
+  });
+};
+
+/**
+ * 如果目录不存在则创建
+ *
+ * @param {String} dir
+ */
+utils.mkdirIfNotExistSync = function (dir) {
+  if (!fs.existsSync(dir)) {
+    debug('mkdir: %s', dir);
+    mkdirp.sync(dir);
+  }
+};
+
+/**
+ * 复制目录文件
+ *
+ * @param {String} sourceDir
+ * @param {String} destDir
+ */
+utils.copyDirSync = function (sourceDir, destDir) {
+  sourceDir = path.resolve(sourceDir);
+  destDir = path.resolve(destDir);
+  debug('copy dir: %s => %s', sourceDir, destDir);
+  rd.eachFileSync(sourceDir, function (f, s) {
+    f = path.resolve(f);
+    var name = f.slice(sourceDir.length + 1);
+    var filename = path.resolve(destDir, name);
+    debug('  - %s => %s', f, filename);
+    mkdirp.sync(path.dirname(filename));
+    fs.writeFileSync(filename, fs.readFileSync(f));
   });
 };

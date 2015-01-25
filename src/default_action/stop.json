@@ -1,0 +1,5 @@
+{
+  "name": "stop",
+  "description": "停止",
+  "list": "pm2 stop {{project.name}} -f"
+}

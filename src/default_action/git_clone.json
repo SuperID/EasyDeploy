@@ -1,0 +1,5 @@
+{
+  "name": "git_clone",
+  "description": "下载Git仓库中的代码",
+  "list": "mkdir -p {{deploy.path}}\r\ngit clone {{project.repository}} {{deploy.path}}"
+}

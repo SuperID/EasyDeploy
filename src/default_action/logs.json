@@ -1,0 +1,5 @@
+{
+  "name": "logs",
+  "description": "实时查看log信息",
+  "list": "pm2 logs {{project.name}}\r\n"
+}

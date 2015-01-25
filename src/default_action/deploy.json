@@ -1,0 +1,5 @@
+{
+  "name": "deploy",
+  "description": "部署最新版本代码",
+  "list": "git reset --hard\r\ngit checkout {{project.branch}}\r\ngit pull\r\nnpm install\r\npm2 stop {{project.name}} -f\r\npm2 start {{project.launch}} --name {{project.name}} -x -i {{env.NODE_NUM}}\r\npm2 logs {{project.name}}"
+}

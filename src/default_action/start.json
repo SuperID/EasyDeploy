@@ -1,0 +1,5 @@
+{
+  "name": "start",
+  "description": "启动",
+  "list": "npm install\r\npm2 stop {{project.name}} -f\r\npm2 start {{project.launch}} --name {{project.name}} -x -i {{env.NODE_NUM}}\r\n"
+}

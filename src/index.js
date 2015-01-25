@@ -139,5 +139,16 @@ exports.init = function (config, server) {
     require(f);
   });
 
+  // 创建默认目录
+  utils.mkdirIfNotExistSync(utils.dataDir('action'));
+  utils.mkdirIfNotExistSync(utils.dataDir('server'));
+  utils.mkdirIfNotExistSync(utils.dataDir('project'));
+  utils.mkdirIfNotExistSync(utils.dataDir('log'));
+
+  // 创建默认数据文件
+  if (rd.readFileFilterSync(utils.dataDir('action'), /\.json$/).length < 1) {
+    utils.copyDirSync(utils.sourceDir('default_action'), utils.dataDir('action'));
+  }
+
   return router;
 };
