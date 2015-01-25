@@ -4,6 +4,9 @@
   {% include "inc/nav" %}
   <div class="container">
     {% include "inc/error" %}
+    {% if _server.query.saved == 1 %}
+    <div class="alert alert-success">已更新!</div>
+    {% endif %}
     <div class="panel panel-default">
       <div class="panel-heading"><span class="panel-title">服务器 {{input.name|escape}}</span></div>
       <div class="panel-body">

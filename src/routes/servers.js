@@ -37,7 +37,7 @@ function saveItem (req, res, next) {
       res.locals.nav = 'servers';
       res.render('server/item');
     } else {
-      res.relativeRedirect('/server/' + req.body.name);
+      res.relativeRedirect('/server/' + req.body.name + '?saved=1');
     }
   });
 }

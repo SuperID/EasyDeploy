@@ -42,7 +42,7 @@ function saveItem (req, res, next) {
       res.locals.nav = 'projects';
       res.render('project/item');
     } else {
-      res.relativeRedirect('/project/' + req.body.name);
+      res.relativeRedirect('/project/' + req.body.name + '?saved=1');
     }
   });
 }
@@ -110,7 +110,7 @@ function saveServer (req, res, next) {
       res.locals.error = err;
       addServer(req, res, next);
     } else {
-      res.relativeRedirect('/project/' + req.params.name);
+      res.relativeRedirect('/project/' + req.params.name + '?saved=1');
     }
   });
 }

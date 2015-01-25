@@ -37,7 +37,7 @@ function saveItem (req, res, next) {
       res.locals.nav = 'actions';
       res.render('action/item');
     } else {
-      res.relativeRedirect('/action/' + req.body.name);
+      res.relativeRedirect('/action/' + req.body.name + '?saved=1');
     }
   });
 }
