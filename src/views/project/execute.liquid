@@ -65,9 +65,11 @@
             </table>
           </div>
         </div>
-        <div id="logs"></div>
-        <div class="text-center" style="margin-top:10px;">
-          <button class="btn btn-xs btn-danger btn-stop-term"><span class="glyphicon glyphicon-stop"></span> 结束</button>
+        <div id="logs-wrap">
+          <div id="logs"></div>
+          <div class="text-center" style="margin-top:10px;">
+            <button class="btn btn-xs btn-danger btn-stop-term"><span class="glyphicon glyphicon-stop"></span> 结束</button>
+          </div>
         </div>
       </div>
     </div>
@@ -128,5 +130,13 @@ $('.btn-stop-term').click(function () {
   if (!confirm('确定要结束当前动作进程吗?')) return;
   socket.emit('stop');
 });
+
+// 自动定位到最佳位置
+var $logsWrap = $('#logs-wrap');
+var $window = $(window);
+$logs.height($window.height() - ($logsWrap.height() - $logs.height()));
+$('body').animate({
+  scrollTop: $logsWrap.position().top + 'px'
+}, 500);
 </script>
 {% endunless %}
