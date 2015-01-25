@@ -12,6 +12,10 @@
   color: #CCC;
   font-size: 12px;
 }
+#logs .error-log {
+  color: #f00;
+  font-size: 14px;
+}
 </style>
 
 <body>
@@ -62,6 +66,9 @@
           </div>
         </div>
         <div id="logs"></div>
+        <div class="text-center" style="margin-top:10px;">
+          <button class="btn btn-xs btn-danger btn-stop-term"><span class="glyphicon glyphicon-stop"></span> 结束</button>
+        </div>
       </div>
     </div>
   </div>
@@ -91,11 +98,6 @@ function linkify (txt) {
 }
 
 function appendLog (msg) {
-  msg = spaceToNBSP(msg);
-  msg = newLineToBR(msg);
-  msg = ansi2html(msg);
-  msg = term2html(msg);
-  msg = linkify(msg);
   $logs.append(msg);
   appendLog.dataLength += msg.length;
   if (appendLog.dataLength > 1000000) {
@@ -108,13 +110,23 @@ function appendLog (msg) {
 var socket = io();
 
 socket.on('log', function (msg) {
+  msg = spaceToNBSP(msg);
+  msg = newLineToBR(msg);
+  msg = ansi2html(msg);
+  msg = term2html(msg);
+  msg = linkify(msg);
   appendLog(msg);
 });
 
 socket.on('error log', function (msg) {
-  appendLog('<p class="text-danger">' + msg + '</p>');
+  appendLog('<p class="error-log">' + msg + '</p>');
 });
 
 socket.emit('task id', '{{task.id|escape}}');
+
+$('.btn-stop-term').click(function () {
+  if (!confirm('确定要结束当前动作进程吗?')) return;
+  socket.emit('stop');
+});
 </script>
 {% endunless %}

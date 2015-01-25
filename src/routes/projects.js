@@ -214,17 +214,22 @@ function (req, res, next) {
       });
     }
   ], function (err) {
-    if (err) res.locals.error = err;
+    if (err) {
+      res.locals.error = err;
+      return renderPage();
+    }
 
     generateExecCommands(task, function (err) {
       if (err) res.locals.error = err;
-
       res.locals.task = task;
-      res.locals.nav = 'projects';
-      res.render('project/execute');
+      renderPage();
     });
-
   });
+
+  function renderPage () {
+    res.locals.nav = 'projects';
+    res.render('project/execute');
+  }
 });
 
 io.on('connection', function (socket) {
@@ -262,6 +267,14 @@ io.on('connection', function (socket) {
         });
       });
     }
+  });
+
+  socket.on('stop', function () {
+    if (!task) return socket.emit('error log', '任务不存在!');
+    socket.emit('error log', '正在结束任务' + task.id + '...');
+
+    task.ssh.end();
+    delete executeTasks[task.id];
   });
 
   function listenStream () {
