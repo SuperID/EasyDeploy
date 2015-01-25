@@ -150,12 +150,30 @@ var CMD_PREFIX = [
   '{{deploy.env}}'
 ].join('\n') + '\n';
 
+function parseEnvString (str) {
+  var obj = {};
+  str.split(/\n/).map(function (line) {
+    return line.trim();
+  }).filter(function (line) {
+    return line;
+  }).forEach(function (line) {
+    var i = line.indexOf('=');
+    if (i !== -1) {
+      var k = line.slice(0, i).trim();
+      var v = line.slice(i + 1).trim();
+      obj[k] = v;
+    }
+  });
+  return obj;
+}
+
 function generateExecCommands (task, callback) {
   var context = tinyliquid.newContext();
   context.setLocals('project', task.projectInfo);
   context.setLocals('deploy', task.deployInfo);
   context.setLocals('server', task.serverInfo);
   context.setLocals('action', task.actionInfo);
+  context.setLocals('env', parseEnvString(task.deployInfo.env));
   tinyliquid.run(CMD_PREFIX + task.actionInfo.list, context, function (err) {
     if (err) return callback(err);
 
