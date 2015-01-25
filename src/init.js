@@ -50,3 +50,11 @@ context.setAsyncLocals('data_project_list', function (name, callback) {
 context.setAsyncLocals('data_action_list', function (name, callback) {
   NS('lib.action').list(utils.defaultErrorValue(callback, []));
 });
+
+context.setAsyncLocals('data_execute_tasks', function (name, callback) {
+  var list = [];
+  Object.keys(NS('executeTasks')).forEach(function (k) {
+    list.push(NS('executeTasks')[k]);
+  });
+  callback(null, list);
+});

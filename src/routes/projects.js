@@ -144,6 +144,7 @@ function (req, res, next) {
 // -----------------------------------------------------------------------------
 
 var executeTasks = {};
+NS('executeTasks', executeTasks);
 
 var CMD_PREFIX = [
   'cd {{deploy.path}}',
