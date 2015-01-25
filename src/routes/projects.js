@@ -147,7 +147,7 @@ var executeTasks = {};
 
 var CMD_PREFIX = [
   'cd {{deploy.path}}',
-  '{{deploy.env}}'
+  '{{env_lines}}'
 ].join('\n') + '\n';
 
 function parseEnvString (str) {
@@ -167,6 +167,18 @@ function parseEnvString (str) {
   return obj;
 }
 
+function wrapEnvLines (lines) {
+  return lines.split(/\n/).map(function (line) {
+    return line.trim();
+  }).filter(function (line) {
+    return line;
+  }).map(function (line) {
+    if (line.split(' ')[0] !== 'export') {
+      return 'export ' + line;
+    }
+  }).join('\n');
+}
+
 function generateExecCommands (task, callback) {
   var context = tinyliquid.newContext();
   context.setLocals('project', task.projectInfo);
@@ -174,6 +186,7 @@ function generateExecCommands (task, callback) {
   context.setLocals('server', task.serverInfo);
   context.setLocals('action', task.actionInfo);
   context.setLocals('env', parseEnvString(task.deployInfo.env));
+  context.setLocals('env_lines', wrapEnvLines(task.deployInfo.env));
   tinyliquid.run(CMD_PREFIX + task.actionInfo.list, context, function (err) {
     if (err) return callback(err);
 
