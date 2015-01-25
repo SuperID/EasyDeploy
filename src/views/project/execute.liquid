@@ -134,7 +134,11 @@ $('.btn-stop-term').click(function () {
 // 自动定位到最佳位置
 var $logsWrap = $('#logs-wrap');
 var $window = $(window);
-$logs.height($window.height() - ($logsWrap.height() - $logs.height()));
+function resetLogsHeight () {
+  $logs.height($window.height() - ($logsWrap.height() - $logs.height()));
+}
+resetLogsHeight();
+$window.resize(resetLogsHeight);
 $('body').animate({
   scrollTop: $logsWrap.position().top + 'px'
 }, 500);
