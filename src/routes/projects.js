@@ -145,13 +145,18 @@ function (req, res, next) {
 
 var executeTasks = {};
 
+var CMD_PREFIX = [
+  'cd {{deploy.path}}',
+  '{{deploy.env}}'
+].join('\n') + '\n';
+
 function generateExecCommands (task, callback) {
   var context = tinyliquid.newContext();
   context.setLocals('project', task.projectInfo);
   context.setLocals('deploy', task.deployInfo);
   context.setLocals('server', task.serverInfo);
   context.setLocals('action', task.actionInfo);
-  tinyliquid.run('cd {{deploy.path}}\n' + task.actionInfo.list, context, function (err) {
+  tinyliquid.run(CMD_PREFIX + task.actionInfo.list, context, function (err) {
     if (err) return callback(err);
 
     task.commands = context.getBuffer();
