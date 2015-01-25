@@ -72,6 +72,7 @@
 {% unless error %}
 <script src="/socket.io/socket.io.js"></script>
 <script src="{{'/assets/ansi2html.js'|relative_url}}"></script>
+<script src="{{'/assets/term2html.js'|relative_url}}"></script>
 <script>
 var $logs = $('#logs');
 
@@ -93,6 +94,7 @@ function appendLog (msg) {
   msg = spaceToNBSP(msg);
   msg = newLineToBR(msg);
   msg = ansi2html(msg);
+  msg = term2html(msg);
   msg = linkify(msg);
   $logs.append(msg);
   appendLog.dataLength += msg.length;
