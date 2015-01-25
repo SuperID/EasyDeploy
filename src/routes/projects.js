@@ -165,7 +165,7 @@ router.post('/project/:name/execute.json',
   NS('middleware.json'),
   NS('middleware.urlencoded'),
 function (req, res, next) {
-  var id = utils.randomString(10);
+  var id = utils.randomString(30);
   executeTasks[id] = {
     id: id,
     project: req.params.name,

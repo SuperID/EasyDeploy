@@ -8,6 +8,9 @@
   padding: 10px 15px;
   height: 500px;
   overflow-y: scroll;
+  background-color: #000;
+  color: #CCC;
+  font-size: 12px;
 }
 </style>
 
@@ -68,7 +71,7 @@
 
 {% unless error %}
 <script src="/socket.io/socket.io.js"></script>
-<script src="{{'/assets/ansi_up.js'|relative_url}}"></script>
+<script src="{{'/assets/ansi2html.js'|relative_url}}"></script>
 <script>
 var $logs = $('#logs');
 
@@ -76,10 +79,27 @@ function newLineToBR (line) {
   return line.replace(/\n/g, '<br>');
 }
 
+function spaceToNBSP (line) {
+  return line.replace(/ /g, '&nbsp;');
+}
+
+function linkify (txt) {
+  return txt.replace(/(https?:\/\/[^\s]+)/gm, function(str) {
+    return "<a href=\"" + str + "\">" + str + "</a>";
+  });
+}
+
 function appendLog (msg) {
-  msg = ansi_up.ansi_to_html(msg);
+  msg = spaceToNBSP(msg);
   msg = newLineToBR(msg);
+  msg = ansi2html(msg);
+  msg = linkify(msg);
   $logs.append(msg);
+  appendLog.dataLength += msg.length;
+  if (appendLog.dataLength > 1000000) {
+    $logs.html($logs.html().substr(-500000));
+    appendLog.dataLength = $logs.html().length;
+  }
   $logs.scrollTop(999999999999999);
 }
 
