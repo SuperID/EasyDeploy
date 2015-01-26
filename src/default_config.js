@@ -23,3 +23,6 @@ config.admin.password = 'BB:0D01A324655BF648E2A39CA9EDDADB80:56';
 
 // 数据目录
 config.dataDir = './data';
+
+// 模板目录
+config.viewsDir = './views';

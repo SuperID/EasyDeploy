@@ -86,6 +86,18 @@ utils.sourceDir = function () {
 };
 
 /**
+ * 取模板目录文件路径
+ *
+ * @param {String} paths
+ * @return {String}
+ */
+utils.viewsDir = function () {
+  var args = Array.prototype.slice.call(arguments);
+  args.unshift(utils.NS('config.viewsDir'));
+  return path.resolve.apply(null, args);
+};
+
+/**
  * 读取JSON文件
  *
  * @param {String} filename

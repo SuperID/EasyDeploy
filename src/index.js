@@ -65,9 +65,23 @@ exports.init = function (config, server) {
   router.use('/assets', serveStatic(ASSETS_DIR));
 
   // 初始化Liquid模板
-  var VIEWS_DIR = utils.sourceDir('views');
+  var USER_VIEWS_DIR = utils.viewsDir('.');
+  var DEFAULT_VIEWS_DIR = utils.sourceDir('views');
   var renderLiquid = expressLiquid({
-    context: utils.NS('tinyliquid.context')
+    context: utils.NS('tinyliquid.context'),
+    includeFile: function (filename, callback) {
+      var name = filename.slice(USER_VIEWS_DIR.length + 1);
+      debug('template: include file: %s', name);
+      fs.exists(filename, function (exists) {
+        if (exists) {
+          debug('  - include from custom views dir: [%s] %s', name, filename);
+          return fs.readFile(filename, callback);
+        }
+        filename = utils.sourceDir(DEFAULT_VIEWS_DIR, name);
+        debug('  - include from default views dir: [%s] %s', name, filename);
+        fs.readFile(filename, callback);
+      });
+    }
   });
   router.use(function (req, res, next) {
     res.context = tinyliquid.newContext();
@@ -82,7 +96,7 @@ exports.init = function (config, server) {
       });
       data.settings = {};
       data.settings['view engine'] = 'liquid';
-      data.settings['views'] = VIEWS_DIR;
+      data.settings['views'] = USER_VIEWS_DIR;
       data.context = res.context;
       renderLiquid(view, data, function (err, html) {
         if (err) return next(err);
