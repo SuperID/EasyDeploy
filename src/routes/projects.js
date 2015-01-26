@@ -196,6 +196,13 @@ function generateExecCommands (task, callback) {
   });
 }
 
+router.get('/tasks',
+  NS('middleware.check_login'),
+function (req, res, next) {
+  res.locals.nav = 'tasks';
+  res.render('tasks');
+});
+
 router.post('/project/:name/execute.json',
   NS('middleware.check_login'),
   NS('middleware.multiparty'),
@@ -207,7 +214,8 @@ function (req, res, next) {
     id: id,
     project: req.params.name,
     deployId: req.body.id,
-    action: req.body.action
+    action: req.body.action,
+    startedAt: new Date()
   };
   res.apiSuccess({url: res.getRelativeRedirect('/project/' + req.params.name + '/execute/realtime/' + id)});
 });

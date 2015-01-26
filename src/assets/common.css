@@ -24,3 +24,6 @@ body {
   font-weight: bold;
   -webkit-font-smoothing: antialiased;
 }
+.text-muted {
+  color: #999;
+}
