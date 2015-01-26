@@ -61,11 +61,11 @@ exports.init = function (config, server) {
   utils.NS('lib.action', require('./lib/action'));
   require('./init');
 
-  var ASSETS_DIR = path.resolve(__dirname, 'assets');
+  var ASSETS_DIR = utils.sourceDir('assets');
   router.use('/assets', serveStatic(ASSETS_DIR));
 
   // 初始化Liquid模板
-  var VIEWS_DIR = path.resolve(__dirname, 'views');
+  var VIEWS_DIR = utils.sourceDir('views');
   var renderLiquid = expressLiquid({
     context: utils.NS('tinyliquid.context')
   });
@@ -135,7 +135,7 @@ exports.init = function (config, server) {
   router.use(utils.NS('middleware.session'));
 
   // 初始化路由
-  rd.eachFileFilterSync(path.resolve(__dirname, 'routes'), /\.js$/, function (f, s) {
+  rd.eachFileFilterSync(utils.sourceDir('routes'), /\.js$/, function (f, s) {
     require(f);
   });
 
