@@ -16,6 +16,11 @@
 
 body {
   margin-bottom: 50px;
-  font-family: Menlo, Monaco, Consolas, 'Courier New', monospace;
+  font-family: 'Open Sans', Arial, 'Hiragino Sans GB',Menlo, Monaco, Consolas, 'Courier New', monospace 'Microsoft YaHei', 微软雅黑, STHeiti, 'WenQuanYi Micro Hei', SimSun, sans-serif;
   /*-webkit-font-smoothing: antialiased;*/
+}
+.navbar-nav {
+  font-size: 16px;
+  font-weight: bold;
+  -webkit-font-smoothing: antialiased;
 }
