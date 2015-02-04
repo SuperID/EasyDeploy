@@ -1,0 +1,6 @@
+#!/bin/sh
+
+cd example
+export DEBUG=easydeploy:*,lei:ssh:*,example
+export PORT=3000
+node index.js
