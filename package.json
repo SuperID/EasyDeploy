@@ -23,7 +23,7 @@
     "express-liquid": "^0.2.6",
     "express.io": "^1.1.13",
     "lei-ns": "^0.1.2",
-    "lei-ssh": "0.0.1",
+    "lei-ssh": "0.0.2",
     "lei-utils": "^1.0.5",
     "mkdirp": "^0.5.0",
     "rd": "0.0.2",

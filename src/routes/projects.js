@@ -282,14 +282,23 @@ io.on('connection', function (socket) {
     if (!task) return socket.emit('error log', '任务' + id + '不存在!');
 
     if (task.stream) {
+
       listenStream();
+
     } else {
+
       var options = {
         host: task.serverInfo.host,
         port: task.serverInfo.port,
-        username: task.serverInfo.user,
-        privateKey: task.serverInfo.key.trim()
+        username: task.serverInfo.user
       };
+      task.serverInfo.key = task.serverInfo.key.trim();
+      if (task.serverInfo.key) {
+        options.privateKey = task.serverInfo.key;
+      } else {
+        options.password = task.serverInfo.password;
+      }
+
       task.ssh = new SSHClient(options);
       task.ssh.connect(function (err) {
         if (err) return socket.emit('error log', '连接到远程服务器失败: ' + err);

@@ -36,9 +36,16 @@
             </div>
           </div>
           <div class="form-group">
+            <label for="ipt-password" class="col-sm-2 control-label">密码</label>
+            <div class="col-sm-10">
+              <input type="password" class="form-control" id="ipt-password" placeholder="密码" name="password" value="{{input.password|escape}}">
+            </div>
+          </div>
+          <div class="form-group">
             <label for="ipt-key" class="col-sm-2 control-label">私钥</label>
             <div class="col-sm-10">
               <textarea class="form-control" id="ipt-key" placeholder="私钥" name="key" rows="5">{{input.key|escape}}</textarea>
+              <p class="help-block">说明: 密码和私钥任填一项即可，如果设置了两者则使用私钥登录</p>
             </div>
           </div>
           <div class="form-group">
