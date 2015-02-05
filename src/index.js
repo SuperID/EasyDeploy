@@ -158,6 +158,7 @@ exports.init = function (config, server) {
   utils.mkdirIfNotExistSync(utils.dataDir('server'));
   utils.mkdirIfNotExistSync(utils.dataDir('project'));
   utils.mkdirIfNotExistSync(utils.dataDir('log'));
+  utils.mkdirIfNotExistSync(utils.dataDir('git'));
 
   // 创建默认数据文件
   if (rd.readFileFilterSync(utils.dataDir('action'), /\.json$/).length < 1) {

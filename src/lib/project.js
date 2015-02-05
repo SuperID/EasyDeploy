@@ -41,6 +41,8 @@ exports.save = function (data, callback) {
       data = utils.merge(ret, data);
     }
 
+    if (!data.repositoryLocalTemp) data.repositoryLocalTemp = utils.randomString(10);
+
     var filename = utils.dataDir('project', data.name + '.json');
     utils.writeJSONFile(filename, data, callback);
   });

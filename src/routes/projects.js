@@ -11,6 +11,7 @@ var io = NS('io');
 var async = require('async');
 var SSHClient = require('lei-ssh');
 var tinyliquid = require('tinyliquid');
+var EasyDeployGitClient = require('../lib/git');
 
 
 router.get('/project/:name',
@@ -23,6 +24,33 @@ function (req, res, next) {
     res.locals.project = info;
     res.locals.nav = 'projects';
     res.render('project/item');
+  });
+});
+
+router.get('/project/:name/commits.json',
+  NS('middleware.check_login'),
+function (req, res, next) {
+  if (!(req.query.skip > 0)) req.query.skip = 0;
+  if (!(req.query.limit > 0)) req.query.limit = 5;
+  NS('lib.project').get(req.params.name, function (err, info) {
+    if (err) res.locals.error = err;
+
+    var git = new EasyDeployGitClient(info);
+    git.commits(function (err, commits) {
+      if (err) return res.json({error: err});
+
+      var ret = commits.slice(req.query.skip, req.query.limit).map(function (item) {
+        return {
+          id: item.id,
+          sha: item.sha,
+          committer: item.committer,
+          committed_date: item.committed_date,
+          message: item.message,
+          short_message: item.short_message,
+        };
+      });
+      res.json({commits: ret});
+    });
   });
 });
 
