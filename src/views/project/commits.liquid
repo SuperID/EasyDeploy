@@ -1,0 +1,33 @@
+<ul class="list-group">
+{% for item in commits %}
+  {% assign commit_id = item.id %}
+  <li class="list-group-item commit-item">
+    <strong>{{item.id|substr:0,7|escape}}</strong>
+    (<span class="text-primary" title="{{item.committer.email|escape}}">{{item.committer.name|escape}}</span> <span class="text-info">{{item.committed_date|date:"%Y-%m-%d %H:%M:%S"|escape}}</span>)
+    {{item.short_message|escape}}
+    <div class="pull-right">
+      <span class="text-primary deploy-name"></span>
+      <div class="btn-group">
+        <button type="button" class="btn btn-info btn-xs dropdown-toggle" data-toggle="dropdown" aria-expanded="false">
+          服务器 <span class="caret"></span>
+        </button>
+        <ul class="dropdown-menu" role="menu">
+          {% for item2 in project.servers %}
+            <li><a class="btn-select-server" data-id="{{item2.id|escape}}" data-name="{{item2.name|escape}}">{{item2.name|escape}}</a></li>
+          {% endfor %}
+        </ul>
+      </div>
+      <div class="btn-group">
+        <button type="button" class="btn btn-info btn-xs dropdown-toggle" data-toggle="dropdown" aria-expanded="false">
+          动作 <span class="caret"></span>
+        </button>
+        <ul class="dropdown-menu" role="menu">
+          {% for item2 in data_action_list %}
+            <li><a href="#" class="btn-exec-action" data-action="{{item2.name|escape}}" data-version="{{commit_id|escape}}">{{item2.name|escape}}</a></li>
+          {% endfor %}
+        </ul>
+      </div>
+    </div>
+  </li>
+{% endfor %}
+</ul>

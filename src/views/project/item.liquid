@@ -106,14 +106,16 @@ $('.btn-delete').click(function () {
   });
 });
 
-$('.btn-exec-action').click(function () {
+$(document.body).delegate('.btn-exec-action', 'click', function () {
   var $btn = $(this);
   var id = $btn.data('id');
   var action = $btn.data('action');
+  var version = $btn.data('version');
   $btn.button('loading');
   ajaxRequest.post('{{"/project"|relative_url}}/{{project.name|escape}}/execute.json', {
     id: id,
-    action: action
+    action: action,
+    version: version
   }, function (err, ret) {
     $btn.button('reset');
     if (err) return alert(err);
@@ -121,22 +123,16 @@ $('.btn-exec-action').click(function () {
   });
 });
 
-ajaxRequest.get('{{"/project"|relative_url}}/{{project.name|escape}}/commits.json', {limit: 20}, function (err, ret) {
-  if (err) return $('.commits').html('<div class="alert alert-danger">' + err + '</div>');
+$(document.body).delegate('.btn-select-server', 'click', function () {
+  var $btn = $(this);
+  var id = $btn.data('id');
+  var name = $btn.data('name');
+  var $p = $btn.closest('.commit-item');
+  $p.find('.btn-exec-action').data('id', id);
+  $p.find('.deploy-name').text(name);
+});
 
-  var html = '<ul class="list-group">';
-  ret.commits.forEach(function (item) {
-    html += '<li class="list-group-item">' +
-              '<strong>' + item.id.substr(0, 7) + '</strong> ' +
-              '(<span class="text-primary">' + item.committer.name + '</span> ' +
-              '<span class="text-info">' + item.committed_date + '</span>) ' +
-              item.short_message +
-              '<div class="pull-right">' +
-                '<button class="btn btn-xs btn-primary">部署当前版本</button>' +
-              '</div>' +
-            '</li>';
-  });
-  html += '</ul>';
+$.get('{{"/project"|relative_url}}/{{project.name|escape}}/commits', {limit: 20}, function (html) {
   $('.commits').hide().after(html);
 });
 </script>

@@ -27,7 +27,7 @@ function (req, res, next) {
   });
 });
 
-router.get('/project/:name/commits.json',
+router.get('/project/:name/commits',
   NS('middleware.check_login'),
 function (req, res, next) {
   if (!(req.query.skip > 0)) req.query.skip = 0;
@@ -37,7 +37,7 @@ function (req, res, next) {
 
     var git = new EasyDeployGitClient(info);
     git.commits(function (err, commits) {
-      if (err) return res.json({error: err});
+      if (err) return next(err);
 
       var ret = commits.slice(req.query.skip, req.query.limit).map(function (item) {
         return {
@@ -49,7 +49,8 @@ function (req, res, next) {
           short_message: item.short_message,
         };
       });
-      res.json({commits: ret});
+      res.locals.project = info;
+      res.render('project/commits', {commits: ret});
     });
   });
 });
@@ -216,6 +217,9 @@ function generateExecCommands (task, callback) {
   context.setLocals('action', task.actionInfo);
   context.setLocals('env', parseEnvString(task.deployInfo.env));
   context.setLocals('env_lines', wrapEnvLines(task.deployInfo.env));
+  if (task.version) {
+    context.setLocals('switch_version', 'git checkout ' + task.version);
+  }
   tinyliquid.run(CMD_PREFIX + task.actionInfo.list, context, function (err) {
     if (err) return callback(err);
 
@@ -243,6 +247,7 @@ function (req, res, next) {
     project: req.params.name,
     deployId: req.body.id,
     action: req.body.action,
+    version: req.body.version,
     startedAt: new Date()
   };
   res.apiSuccess({url: res.getRelativeRedirect('/project/' + req.params.name + '/execute/realtime/' + id)});
