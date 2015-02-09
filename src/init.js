@@ -4,6 +4,8 @@
  * @author Zongmin Lei <leizongmin@gmail.com>
  */
 
+var path = require('path');
+var fs = require('fs');
 var tinyliquid = require('tinyliquid');
 var multiparty = require('connect-multiparty');
 var bodyParser = require('body-parser');
@@ -57,4 +59,10 @@ context.setAsyncLocals('data_execute_tasks', function (name, callback) {
     list.push(NS('executeTasks')[k]);
   });
   callback(null, list);
+});
+
+context.setAsyncLocals('_user_default_ssh_key', function (name, callback) {
+  fs.readFile(path.resolve(process.env.HOME, '.ssh/id_rsa'), function (err, data) {
+    callback(null, (data || '').toString());
+  });
 });
