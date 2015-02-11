@@ -1,0 +1,24 @@
+{% include "inc/head" %}
+
+<body>
+  {% include "inc/nav" %}
+  <div class="container">
+    <div class="panel panel-default">
+      <div class="panel-heading">
+        <span class="panel-title">
+          插件 (共{{data_plugin_list.length}})
+        </span>
+      </div>
+      <div class="list-group">
+        {% for item in data_plugin_list %}
+        <a href="{{'/plugin'|relative_url}}/{{item.name|escape}}" class="list-group-item">
+          <strong>{{item.name|escape}}</strong>
+          <span class="text-muted">({{item.info.description|escape}})</span>
+        </a>
+        {% endfor %}
+      </div>
+    </div>
+  </div>
+</body>
+
+{% include "inc/foot" %}

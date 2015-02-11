@@ -59,6 +59,7 @@ exports.init = function (config, server) {
   utils.NS('lib.server', require('./lib/server'));
   utils.NS('lib.project', require('./lib/project'));
   utils.NS('lib.action', require('./lib/action'));
+  utils.NS('lib.plugin', require('./lib/plugin'));
   require('./init');
 
   var ASSETS_DIR = utils.sourceDir('assets');
@@ -159,6 +160,8 @@ exports.init = function (config, server) {
   utils.mkdirIfNotExistSync(utils.dataDir('project'));
   utils.mkdirIfNotExistSync(utils.dataDir('log'));
   utils.mkdirIfNotExistSync(utils.dataDir('git'));
+  utils.mkdirIfNotExistSync(utils.viewsDir('.'));
+  utils.mkdirIfNotExistSync(utils.pluginDir('.'));
 
   // 创建默认数据文件
   if (rd.readFileFilterSync(utils.dataDir('action'), /\.json$/).length < 1) {

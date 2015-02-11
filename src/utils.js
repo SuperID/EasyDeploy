@@ -98,6 +98,18 @@ utils.viewsDir = function () {
 };
 
 /**
+ * 取模板目录文件路径
+ *
+ * @param {String} paths
+ * @return {String}
+ */
+utils.pluginDir = function () {
+  var args = Array.prototype.slice.call(arguments);
+  args.unshift(utils.NS('config.pluginDir'));
+  return path.resolve.apply(null, args);
+};
+
+/**
  * 读取JSON文件
  *
  * @param {String} filename
@@ -222,4 +234,21 @@ utils.copyDirSync = function (sourceDir, destDir) {
     mkdirp.sync(path.dirname(filename));
     fs.writeFileSync(filename, fs.readFileSync(f));
   });
+};
+
+/**
+ * 合并数组
+ *
+ * @param {Array} a
+ * @param {Array} b
+ * @return {Array}
+ */
+utils.mergeArray = function (a, b) {
+  var c = a.slice();
+  b.forEach(function (v) {
+    if (c.indexOf(v) === -1) {
+      c.push(v);
+    }
+  });
+  return c;
 };

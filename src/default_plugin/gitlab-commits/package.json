@@ -1,0 +1,5 @@
+{
+  "name": "gitlab-commits",
+  "description": "通过GitLab的API来获取Commit列表",
+  "main": "index.js"
+}

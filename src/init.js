@@ -66,3 +66,7 @@ context.setAsyncLocals('_user_default_ssh_key', function (name, callback) {
     callback(null, (data || '').toString());
   });
 });
+
+context.setAsyncLocals('data_plugin_list', function (name, callback) {
+  NS('lib.plugin').list(utils.defaultErrorValue(callback, []));
+});

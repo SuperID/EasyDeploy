@@ -17,6 +17,7 @@
         <li {% if nav=="servers" %}class="active" {% endif %}><a href="{{'/servers'|relative_url}}">服务器</a></li>
         <li {% if nav=="actions" %}class="active" {% endif %}><a href="{{'/actions'|relative_url}}">动作</a></li>
         <li {% if nav=="tasks" %}class="active" {% endif %}><a href="{{'/tasks'|relative_url}}">活动任务</a></li>
+        <li {% if nav=="plugins" %}class="active" {% endif %}><a href="{{'/plugins'|relative_url}}">插件</a></li>
       </ul>
       <ul class="nav navbar-nav navbar-right">
         <li><a href="{{'/logout'|relative_url}}?code={{_server.session.login.code|escape}}">注销 {{_server.session.login.username|escape}}</a></li>

@@ -26,3 +26,6 @@ config.dataDir = './data';
 
 // 模板目录
 config.viewsDir = './views';
+
+// 插件目录
+config.pluginDir = './plugin';
