@@ -1,0 +1,5 @@
+{
+  "name": "git-local",
+  "description": "Git本地客户端",
+  "main": "index.js"
+}

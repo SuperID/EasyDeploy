@@ -30,6 +30,8 @@ function (req, res, next) {
 router.get('/project/:name/commits',
   NS('middleware.check_login'),
 function (req, res, next) {
+  res.render('project/commits');
+  /*
   if (!(req.query.skip > 0)) req.query.skip = 0;
   if (!(req.query.limit > 0)) req.query.limit = 5;
   NS('lib.project').get(req.params.name, function (err, info) {
@@ -52,7 +54,7 @@ function (req, res, next) {
       res.locals.project = info;
       res.render('project/commits', {commits: ret});
     });
-  });
+  });*/
 });
 
 router.get('/projects/new',

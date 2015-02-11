@@ -9,6 +9,7 @@ var fs = require('fs');
 var rd = require('rd');
 var async = require('async');
 var utils = require('../utils');
+var NS = utils.NS;
 var debug = utils.debug('lib:plugin');
 
 
@@ -165,4 +166,40 @@ exports.disable = function (name, callback) {
     exports.save(data, callback);
   });
 };
+
+/**
+ * 初始化插件
+ *
+ * @param {String} name
+ */
+function InitPlugin (name) {
+  this.name = name;
+  this.data = {};
+  var me = this;
+
+  this.data.register = function (name, fn) {
+    NS('dataSource.' + name + '.' + me.name, fn);
+  };
+}
+
+InitPlugin.prototype.init = function (callback) {
+  var me = this;
+  callback = callback || function (err) {
+    if (err) throw err;
+  };
+
+  exports.resolvePath(me.name, function (err, dir) {
+    if (err) return callback(err);
+    me.path = dir;
+
+    exports.get(me.name, function (err, info) {
+      if (err) return callback(err);
+      me.info = info;
+
+      require(path.resolve(me.path, info.main || 'index.js'))(me);
+    });
+  });
+};
+
+exports.InitPlugin = InitPlugin;
 

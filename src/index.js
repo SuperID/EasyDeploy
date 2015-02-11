@@ -168,5 +168,20 @@ exports.init = function (config, server) {
     utils.copyDirSync(utils.sourceDir('default_action'), utils.dataDir('action'));
   }
 
+  // 初始化插件
+  utils.NS('lib.plugin').list(function (err, list) {
+    if (err) throw err;
+    var InitPlugin = utils.NS('lib.plugin').InitPlugin;
+    list.forEach(function (item) {
+      debug('init plugin: %s', item.name);
+      var plugin = new InitPlugin(item.name);
+      plugin.init();
+    });
+  });
+
+  setTimeout(function () {
+    console.log(utils.NS('dataSource'));
+  }, 1000);
+
   return router;
 };

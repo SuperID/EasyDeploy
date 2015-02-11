@@ -1,0 +1,5 @@
+{
+  "name": "git-gitlab",
+  "description": "GitLab客户端",
+  "main": "index.js"
+}

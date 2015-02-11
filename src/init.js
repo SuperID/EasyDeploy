@@ -10,7 +10,9 @@ var tinyliquid = require('tinyliquid');
 var multiparty = require('connect-multiparty');
 var bodyParser = require('body-parser');
 var cookieSession = require('cookie-session');
+var async = require('async');
 var utils = require('./utils');
+var debug = utils.debug('init');
 var NS = utils.NS;
 
 
@@ -73,4 +75,19 @@ context.setAsyncLocals('data_plugin_list', function (name, callback) {
 
 context.setAsyncFilter('plugin_get_status', function (name, callback) {
   NS('lib.plugin').get(name, utils.defaultErrorValue(callback, {}));
+});
+
+context.setAsyncLocals('data_git_repository_list', function (name, callback) {
+  var list = [];
+  debug(Object.keys(NS('dataSource.git_repository_list')));
+  async.eachSeries(Object.keys(NS('dataSource.git_repository_list')), function (name, next) {
+    NS('dataSource.git_repository_list.' + name)({}, function (err, ret) {
+      if (Array.isArray(ret)) {
+        list = list.concat(ret);
+      }
+      next();
+    });
+  }, function (err) {
+    callback(null, list);
+  });
 });
