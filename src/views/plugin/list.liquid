@@ -9,16 +9,51 @@
           插件 (共{{data_plugin_list.length}})
         </span>
       </div>
-      <div class="list-group">
+      <ul class="list-group">
         {% for item in data_plugin_list %}
-        <a href="{{'/plugin'|relative_url}}/{{item.name|escape}}" class="list-group-item">
+          {% assign status_info = item.name|plugin_get_status %}
+        <li class="list-group-item">
           <strong>{{item.name|escape}}</strong>
           <span class="text-muted">({{item.info.description|escape}})</span>
-        </a>
+          <div class="pull-right">
+            <a href="{{'/plugin'|relative_url}}/{{item.name|escape}}/setting" class="btn btn-xs btn-primary">设置</a>
+            {% if status_info.enable %}
+            <button class="btn btn-xs btn-danger btn-disable" data-name="{{item.name|escape}}">关闭</button>
+            {% else %}
+            <button class="btn btn-xs btn-success btn-enable" data-name="{{item.name|escape}}">开启</button>
+            {% endif %}
+          </div>
+        </li>
         {% endfor %}
-      </div>
+      </ul>
     </div>
   </div>
 </body>
 
 {% include "inc/foot" %}
+
+<script>
+
+$('.btn-enable').click(function () {
+  var $btn = $(this);
+  var name = $btn.data('name');
+  $btn.button('loading');
+  ajaxRequest.post('{{"/plugin"|relative_url}}/' + name + '/enable.json', function (err, ret) {
+    $btn.button('reset');
+    if (err) return alert(err);
+    location.reload();
+  });
+});
+
+$('.btn-disable').click(function () {
+  var $btn = $(this);
+  var name = $btn.data('name');
+  $btn.button('loading');
+  ajaxRequest.post('{{"/plugin"|relative_url}}/' + name + '/disable.json', function (err, ret) {
+    $btn.button('reset');
+    if (err) return alert(err);
+    location.reload();
+  });
+});
+
+</script>

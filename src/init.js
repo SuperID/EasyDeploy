@@ -70,3 +70,7 @@ context.setAsyncLocals('_user_default_ssh_key', function (name, callback) {
 context.setAsyncLocals('data_plugin_list', function (name, callback) {
   NS('lib.plugin').list(utils.defaultErrorValue(callback, []));
 });
+
+context.setAsyncFilter('plugin_get_status', function (name, callback) {
+  NS('lib.plugin').get(name, utils.defaultErrorValue(callback, {}));
+});

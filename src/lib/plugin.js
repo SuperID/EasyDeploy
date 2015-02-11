@@ -64,3 +64,105 @@ exports.list = function (callback) {
   });
 };
 
+/**
+ * 根据插件名称取插件的路径
+ *
+ * @param {String} name
+ * @param {Function} callback
+ */
+exports.resolvePath = function (name, callback) {
+  var dir = utils.pluginDir(name);
+  fs.exists(dir, function (exists) {
+    if (exists) return callback(null, dir);
+
+    var dir = utils.sourceDir('default_plugin', name);
+    fs.exists(dir, function (exists) {
+      if (exists) return callback(null, dir);
+
+      callback(new Error('could not resolved plugin `' + name + '`'));
+    });
+  });
+};
+
+/**
+ * 取插件的package信息
+ *
+ * @param {String} name
+ * @param {Function} callback
+ */
+exports.getPackageInfo = function (name, callback) {
+  exports.resolvePath(name, function (err, dir) {
+    if (err) return callback(err);
+
+    utils.readJSONFile(path.resolve(dir, 'package.json'), callback);
+  });
+};
+
+/**
+ * 保存Project信息
+ *
+ * @param {Object} data
+ * @param {Function} callback
+ */
+exports.save = function (data, callback) {
+  if (!data.name) data.name = 'unnamed_' + utils.randomString(10);
+
+  exports.get(data.name, function (err, ret) {
+    if (ret) {
+      data = utils.merge(ret, data);
+    }
+
+    var filename = utils.dataDir('plugin', data.name + '.json');
+    utils.writeJSONFile(filename, data, callback);
+  });
+};
+
+/**
+ * 读取指定name
+ *
+ * @param {String} name
+ * @param {Function} callback
+ */
+exports.get = function (name, callback) {
+  var filename = utils.dataDir('plugin', name + '.json');
+  utils.readJSONFile(filename, function (err, ret) {
+    if (err) {
+      if (err.code === 'ENOENT') return callback(null, {name: name});
+      return callback(err);
+    }
+
+    debug('get: name [%s]', name, filename);
+    callback(null, ret);
+  });
+};
+
+/**
+ * 启用插件
+ *
+ * @param {String} name
+ * @param {Function} callback
+ */
+exports.enable = function (name, callback) {
+  exports.get(name, function (err, data) {
+    if (err) return callback(err);
+
+    data.enable = true;
+    exports.save(data, callback);
+  });
+};
+
+/**
+ * 停用插件
+ *
+ * @param {String} name
+ * @param {Function} callback
+ */
+exports.disable = function (name, callback) {
+  exports.get(name, function (err, data) {
+    if (err) return callback(err);
+
+    data.enable = false;
+    exports.save(data, callback);
+  });
+};
+

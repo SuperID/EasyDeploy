@@ -21,14 +21,6 @@ function (req, res, next) {
   });
 });
 
-router.get('/plugins/new',
-  NS('middleware.check_login'),
-function (req, res, next) {
-  res.locals.input = {};
-  res.locals.nav = 'plugins';
-  res.render('plugin/item');
-});
-
 function saveItem (req, res, next) {
   NS('lib.plugin').save(req.body, function (err) {
     if (err) {
@@ -41,27 +33,26 @@ function saveItem (req, res, next) {
     }
   });
 }
-router.post('/plugin/:name',
-  NS('middleware.check_login'),
-  NS('middleware.multiparty'),
-  NS('middleware.json'),
-  NS('middleware.urlencoded'),
-saveItem);
 
-router.post('/plugins/new',
-  NS('middleware.check_login'),
-  NS('middleware.multiparty'),
-  NS('middleware.json'),
-  NS('middleware.urlencoded'),
-saveItem);
-
-router.delete('/plugin/:name.json',
+router.post('/plugin/:name/enable.json',
   NS('middleware.check_login'),
   NS('middleware.multiparty'),
   NS('middleware.json'),
   NS('middleware.urlencoded'),
 function (req, res, next) {
-  NS('lib.plugin').delete(req.params.name, function (err) {
+  NS('lib.plugin').enable(req.params.name, function (err) {
+    if (err) return res.apiError(err);
+    res.apiSuccess({name: req.params.name});
+  });
+});
+
+router.post('/plugin/:name/disable.json',
+  NS('middleware.check_login'),
+  NS('middleware.multiparty'),
+  NS('middleware.json'),
+  NS('middleware.urlencoded'),
+function (req, res, next) {
+  NS('lib.plugin').disable(req.params.name, function (err) {
     if (err) return res.apiError(err);
     res.apiSuccess({name: req.params.name});
   });
