@@ -8,6 +8,7 @@ var path = require('path');
 var fs = require('fs');
 var rd = require('rd');
 var async = require('async');
+var express = require('express');
 var utils = require('../utils');
 var NS = utils.NS;
 var debug = utils.debug('lib:plugin');
@@ -175,11 +176,15 @@ exports.disable = function (name, callback) {
 function InitPlugin (name) {
   this.name = name;
   this.data = {};
+  this.dataSource = {};
   var me = this;
 
   this.data.register = function (name, fn) {
     NS('dataSource.' + name + '.' + me.name, fn);
+    me.dataSource[name] = fn;
   };
+
+  this.router = express.Router();
 }
 
 InitPlugin.prototype.init = function (callback) {
@@ -199,6 +204,15 @@ InitPlugin.prototype.init = function (callback) {
       require(path.resolve(me.path, info.main || 'index.js'))(me);
     });
   });
+};
+
+InitPlugin.prototype.getStatus = function (callback) {
+  exports.get(this.name, callback);
+};
+
+InitPlugin.prototype.saveStatus = function (data, callback) {
+  data.name = this.name;
+  exports.save(data, callback);
 };
 
 exports.InitPlugin = InitPlugin;

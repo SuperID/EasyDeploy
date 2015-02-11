@@ -1,0 +1,61 @@
+<form class="form-horizontal" role="form" method="post">
+  <div class="form-group">
+    <label for="ipt-name" class="col-sm-2 control-label">名称</label>
+    <div class="col-sm-10">
+      <input type="text" class="form-control" id="ipt-name" placeholder="名称" name="name" value="">
+    </div>
+  </div>
+  <div class="form-group">
+    <label for="ipt-repository" class="col-sm-2 control-label">Git源</label>
+    <div class="col-sm-10">
+      <input type="text" class="form-control" id="ipt-url" placeholder="Git源" name="url" value="">
+    </div>
+  </div>
+  <div class="form-group">
+    <div class="col-sm-offset-2 col-sm-10">
+      <button type="button" class="btn btn-primary btn-add">添加</button>
+    </div>
+  </div>
+</form>
+
+<hr>
+
+<h3>Git源列表</h3>
+<ul class="list-group" ms-controller="repo">
+  <li class="list-group-item" ms-repeat="list">
+    {{el.name}} - {{el.url}}
+    <div class="pull-right">
+      <span ms-if="el.peending" class="text-warning">正在进行...</span>
+      <button ms-if="!el.peending" class="btn btn-xs btn-danger">删除</button>
+    </div>
+  </li>
+</ul>
+
+<script src="/assets/avalon.js"></script>
+
+<script>
+
+var model = avalon.define('repo', function(vm){
+  vm.list = {};
+});
+
+ajaxRequest.get(PLUGIN_URL_PREFIX + '/list.json', function (err, ret) {
+  if (err) return alert(err);
+  model.list = ret.list;
+});
+
+$('.btn-add').click(function () {
+  var name = $('#ipt-name').val();
+  var url = $('#ipt-url').val();
+
+  if (!name) return alert('请填写名称!');
+  if (!url) return alert('请填写Git源!');
+
+  model.list.push({name: name, url: url, peending: true});
+  ajaxRequest.post(PLUGIN_URL_PREFIX + '/add.json', {name: name, url: url}, function (err, ret) {
+    if (err) return alert(err);
+    model.list = ret.list;
+  });
+});
+
+</script>

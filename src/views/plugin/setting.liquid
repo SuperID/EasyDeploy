@@ -1,0 +1,26 @@
+{% include "inc/head" %}
+
+<body>
+  {% include "inc/nav" %}
+  <div class="container">
+    {% include "inc/error" %}
+    <div class="panel panel-default">
+      <div class="panel-heading">
+        <span class="panel-title">{{plugin_package.name|escape}} <span class="text-muted">({{plugin_package.description|escape}})</span></span>
+      </div>
+      <div class="panel-body" id="plugin-setting"></div>
+    </div>
+  </div>
+</body>
+
+{% include "inc/foot" %}
+
+<script>
+
+var PLUGIN_URL_PREFIX = '{{"/plugin"|relative_url}}/{{plugin.name|escape}}';
+
+$.get(PLUGIN_URL_PREFIX, function (html) {
+  $('#plugin-setting').html(html);
+});
+
+</script>

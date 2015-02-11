@@ -9,30 +9,21 @@ var NS = utils.NS;
 var router = NS('router');
 
 
-router.get('/plugin/:name',
+router.get('/plugin/:name/setting',
   NS('middleware.check_login'),
 function (req, res, next) {
   NS('lib.plugin').get(req.params.name, function (err, info) {
     if (err) res.locals.error = err;
+    res.locals.plugin = info;
 
-    res.locals.input = info;
-    res.locals.nav = 'plugins';
-    res.render('plugin/item');
+    NS('lib.plugin').getPackageInfo(req.params.name, function (err, ret) {
+      res.locals.plugin_package = ret;
+
+      res.locals.nav = 'plugins';
+      res.render('plugin/setting');
+    });
   });
 });
-
-function saveItem (req, res, next) {
-  NS('lib.plugin').save(req.body, function (err) {
-    if (err) {
-      res.locals.error = err;
-      res.locals.input = req.body;
-      res.locals.nav = 'plugins';
-      res.render('plugin/item');
-    } else {
-      res.relativeRedirect('/plugin/' + req.body.name + '?saved=1');
-    }
-  });
-}
 
 router.post('/plugin/:name/enable.json',
   NS('middleware.check_login'),

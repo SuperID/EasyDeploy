@@ -175,7 +175,10 @@ exports.init = function (config, server) {
     list.forEach(function (item) {
       debug('init plugin: %s', item.name);
       var plugin = new InitPlugin(item.name);
+      plugin.NS = utils.NS;
       plugin.init();
+      plugin.router.use(utils.NS('middleware.check_login'));
+      router.use('/plugin/' + item.name, plugin.router);
     });
   });
 
